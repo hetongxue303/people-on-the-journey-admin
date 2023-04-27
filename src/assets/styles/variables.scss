@@ -1,0 +1,11 @@
+$menu-text: #bfcbd9;
+
+//默认阴影
+$base-box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
+$base-main-padding: 20px 30px;
+$base-color-white: #fff;
+
+:export {
+    menu-text: $menu-text;
+    base-box-shadow: $base-box-shadow;
+}

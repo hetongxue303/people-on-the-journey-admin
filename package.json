@@ -1,18 +1,38 @@
 {
-  "name": "people-on-the-journey-admin",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "vue": "^3.2.47"
-  },
-  "devDependencies": {
-    "@vitejs/plugin-vue": "^4.1.0",
-    "vite": "^4.3.2"
-  }
+    "name": "people-on-the-journey-admin",
+    "private": true,
+    "version": "0.0.1",
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build",
+        "preview": "vite preview"
+    },
+    "dependencies": {
+        "@element-plus/icons-vue": "^2.1.0",
+        "@icon-park/vue-next": "^1.4.2",
+        "animate.css": "^4.1.1",
+        "axios": "^1.3.6",
+        "element-plus": "^2.3.4",
+        "js-cookie": "^3.0.5",
+        "js-md5": "^0.7.3",
+        "jsencrypt": "^3.3.2",
+        "lodash-es": "^4.17.21",
+        "moment": "^2.29.4",
+        "nprogress": "^0.2.0",
+        "pinia": "^2.0.35",
+        "pinia-plugin-persistedstate": "^3.1.0",
+        "qs": "^6.11.1",
+        "vue": "^3.2.47",
+        "vue-i18n": "^9.2.2",
+        "vue-router": "^4.1.6"
+    },
+    "devDependencies": {
+        "@types/node": "^18.16.1",
+        "@vitejs/plugin-vue": "^4.1.0",
+        "sass": "^1.62.1",
+        "vite": "^4.3.2",
+        "vite-plugin-windicss": "^1.8.10",
+        "windicss": "^3.5.6"
+    }
 }
