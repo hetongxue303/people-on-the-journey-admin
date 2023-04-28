@@ -17,11 +17,19 @@ const messages = {
 }
 export const getLocale = () => {
     // 判断cookie中是否有语言信息
-    const cookieLanguage = cookies.getLanguage()
+    const cookieLanguage = cookies.get('i18nLang')
     if (cookieLanguage) return cookieLanguage
     // 判断当前浏览器语言
-    return navigator.language.toLowerCase().indexOf('zh') !== -1 ? 'zh_cn' : 'en'
+    return navigator.language.toLowerCase()
+                    .indexOf('zh') !== -1 ? 'zh_cn' : 'en'
 }
+const getLanguage = () =>
+    cookies.get('i18nLang')
+
+const setLanguage = (lang) =>
+    cookies.set('i18nLang', lang)
+
+
 const i18n = createI18n({
     legacy: false,
     globalInjection: true,

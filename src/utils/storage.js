@@ -46,18 +46,12 @@ export const session = {
 
 export const cookies = {
     get(key) {
-        return JSON.parse(Cookies.get(key))
+        return Cookies.get(key)
     },
     set(key, value, attributes) {
         Cookies.set(key, value, attributes)
     },
     remove(key) {
         Cookies.remove(key)
-    },
-    getLanguage() {
-        return Cookies.get('i18nLang')
-    },
-    setLanguage(lang) {
-        return Cookies.set('i18nLang', lang)
     }
 }

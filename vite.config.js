@@ -1,7 +1,7 @@
 import {defineConfig} from 'vite'
 import vue from '@vitejs/plugin-vue'
 import WindiCSS from 'vite-plugin-windicss'
-import path from "path";
+import {fileURLToPath, URL} from "node:url";
 
 export default defineConfig({
     mode: 'development',
@@ -9,20 +9,20 @@ export default defineConfig({
         vue(),
         WindiCSS()
     ],
+    resolve: {
+        alias: {
+            '@': fileURLToPath(new URL('./src', import.meta.url)),
+            '@assets': fileURLToPath(new URL('./src/assets', import.meta.url)),
+            '@utils': fileURLToPath(new URL('./src/utils', import.meta.url)),
+            '@components': fileURLToPath(new URL('./src/components', import.meta.url)),
+            '@views': fileURLToPath(new URL('./src/views', import.meta.url)),
+        }
+    },
     css: {
         preprocessorOptions: {
             sass: {
-                additionalData: `@import '@assets/styles/variables.scss';`
+                additionalData: `@import '@assets/styles/variables.module.scss';`
             }
-        }
-    },
-    resolve: {
-        alias: {
-            '@': path.resolve(__dirname, './src'),
-            '@assets': path.resolve(__dirname, './src/assets'),
-            '@utils': path.resolve(__dirname, './src/utils'),
-            '@components': path.resolve(__dirname, './src/components'),
-            '@views': path.resolve(__dirname, './src/views')
         }
     },
     server: {

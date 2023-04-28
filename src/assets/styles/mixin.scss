@@ -1,0 +1,9 @@
+@mixin displayFlex {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+//@mixin borderRadius {
+//    border-radius: $globalBorderRadius;
+//}
