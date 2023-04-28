@@ -40,13 +40,13 @@ export const routes = [
             {
                 name: 'food',
                 path: '/journey/food',
-                meta: {title: '旅游社'},
+                meta: {title: '美食管理'},
                 component: () => import('@views/journey/food/index.vue')
             },
             {
                 name: 'travel-agency',
                 path: '/journey/travel-agency',
-                meta: {title: '美食管理'},
+                meta: {title: '旅游社'},
                 component: () => import('@views/journey/travel-agency/index.vue')
             },
             {
