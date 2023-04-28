@@ -36,6 +36,48 @@ export const routes = [
                 path: '/index',
                 meta: {title: '首页'},
                 component: () => import('@views/index/index.vue')
+            },
+            {
+                name: 'food',
+                path: '/journey/food',
+                meta: {title: '旅游社'},
+                component: () => import('@views/journey/food/index.vue')
+            },
+            {
+                name: 'travel-agency',
+                path: '/journey/travel-agency',
+                meta: {title: '美食管理'},
+                component: () => import('@views/journey/travel-agency/index.vue')
+            },
+            {
+                name: 'scenic-spots',
+                path: '/journey/scenic-spots',
+                meta: {title: '景区管理'},
+                component: () => import('@views/journey/scenic-spots/index.vue')
+            },
+            {
+                name: 'user',
+                path: '/system/user',
+                meta: {title: '用户管理'},
+                component: () => import('@views/system/user/index.vue')
+            },
+            {
+                name: 'role',
+                path: '/system/role',
+                meta: {title: '角色管理'},
+                component: () => import('@views/system/role/index.vue')
+            },
+            {
+                name: 'menu',
+                path: '/system/menu',
+                meta: {title: '菜单管理'},
+                component: () => import('@views/system/menu/index.vue')
+            },
+            {
+                name: 'about',
+                path: '/about',
+                meta: {title: '关于系统'},
+                component: () => import('@views/about/index.vue')
             }
         ]
     }

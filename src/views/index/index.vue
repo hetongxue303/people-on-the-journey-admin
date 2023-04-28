@@ -3,9 +3,9 @@
 </script>
 
 <template>
-    index
+    首页
 </template>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 
 </style>

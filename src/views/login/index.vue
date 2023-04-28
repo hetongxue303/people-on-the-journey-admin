@@ -5,7 +5,7 @@ const {loginForm, userLogin, loading, loginRef, loginRules} = useLogin()
 </script>
 
 <template>
-    <div class="login-content">
+    <div class="login-container">
         <el-form ref="loginRef"
                  :model="loginForm"
                  :rules="loginRules"
@@ -39,7 +39,7 @@ const {loginForm, userLogin, loading, loginRef, loginRules} = useLogin()
 @import "@assets/styles/mixin";
 @import "@assets/styles/variables.module";
 
-.login-content {
+.login-container {
     width: 100%;
     height: 100%;
     background-color: #00cec9;
@@ -51,7 +51,7 @@ const {loginForm, userLogin, loading, loginRef, loginRules} = useLogin()
     width: 400px;
     height: 250px;
     background-color: white;
-    border-radius: $globalBorderRadius;
+    border-radius: $global-border-radius;
 }
 
 

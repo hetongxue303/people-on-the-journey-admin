@@ -3,7 +3,7 @@
 </script>
 
 <template>
-    401
+    关于系统
 </template>
 
 <style lang="scss" scoped>

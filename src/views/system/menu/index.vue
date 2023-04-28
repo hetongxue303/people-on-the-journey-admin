@@ -3,7 +3,7 @@
 </script>
 
 <template>
-    401
+    菜单管理
 </template>
 
 <style lang="scss" scoped>

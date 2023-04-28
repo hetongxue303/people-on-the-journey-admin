@@ -1,5 +1,25 @@
-$globalBorderRadius: 10px;
+/* global */
+$global-border-radius: 10px;
+
+/* layout */
+$layout-aside-width: 210px;
+$layout-aside-width-min: 60px;
+$layout-aside-height: 100vh;
+$layout-aside-background-color: #304156;
+$layout-aside-text-color: #f4f4f5;
+$layout-aside-active-text-color: #409eff;
+$layout-aside-active-background-color: #263445FF;
+$layout-header-height: 50px;
+
 
 :export {
-    globalBorderRadius: $globalBorderRadius;
+    global-border-radius: $global-border-radius;
+    layout-aside-width: $layout-aside-width;
+    layout-aside-width-min: $layout-aside-width-min;
+    layout-aside-height: $layout-aside-height;
+    layout-aside-background-color: $layout-aside-background-color;
+    layout-aside-text-color: $layout-aside-text-color;
+    layout-aside-active-text-color: $layout-aside-active-text-color;
+    layout-aside-active-background-color: $layout-aside-active-background-color;
+    layout-header-height: $layout-header-height;
 }

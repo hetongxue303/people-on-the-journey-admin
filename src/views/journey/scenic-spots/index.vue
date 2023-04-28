@@ -3,7 +3,7 @@
 </script>
 
 <template>
-    401
+    景区管理
 </template>
 
 <style lang="scss" scoped>
