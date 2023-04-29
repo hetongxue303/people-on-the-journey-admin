@@ -24,9 +24,9 @@ export const confirmBox = (
     text,
     tip,
     type,
-    confirm = null,
-    cancel = null,
-    always = null,
+    confirm = Function,
+    cancel = Function,
+    always = Function,
     confirmButtonText = '确定',
     cancelButtonText = '返回'
 ) => {
@@ -35,13 +35,13 @@ export const confirmBox = (
         cancelButtonText,
         type
     })
-        .then(() => confirm())
-        .catch(() =>
-            (cancel ? cancel() : null)
-        )
-        .finally(() =>
-            (always ? always() : null)
-        )
+                .then(() => confirm())
+                .catch(() =>
+                    (cancel ? cancel() : null)
+                )
+                .finally(() =>
+                    (always ? always() : null)
+                )
 }
 
 export const loadIcon = (app) => {

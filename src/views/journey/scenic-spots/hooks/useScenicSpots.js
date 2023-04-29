@@ -22,8 +22,9 @@ export function useScenicSpots() {
         {label: '全选', status: false},
         {label: 'ID', status: false},
         {label: '名称', status: true},
+        {label: '介绍', status: true},
         {label: '创建时间', status: true},
-        {label: '更新时间', status: true},
+        {label: '更新时间', status: false},
         {label: '操作', status: true}
     ])
     const result = (data, dialog) => {
@@ -64,7 +65,7 @@ export function useScenicSpots() {
             .then(({data}) => result(data))
             .catch(({response}) => ElNotification.error(response.data.message))
     const handleBatchDelete = () =>
-        confirmBox('确定删除选中的数据吗？', '提示', 'warning',
+        confirmBox('确定删除选中的数据吗？', '提示', 'warning', () =>
             batchDeleteScenicSpotsUrl(selection.value.map((item) => item['id']))
                 .then(({data}) => result(data))
                 .catch(({response}) => ElNotification.error(response.data.message))
@@ -74,9 +75,9 @@ export function useScenicSpots() {
 
     /* dialog */
     const show = ref(false)
-    const form = ref({status: true})
+    const form = ref({})
     const dialogRef = ref(null)
-    const operate = ref('')
+    const dialogOperate = ref('')
     const title = ref('')
     const dialogRules = reactive({name: [{required: true, message: '名称不能为空', trigger: 'blur'}]})
     const selectionChange = (data) => selection.value = data
@@ -88,7 +89,7 @@ export function useScenicSpots() {
             form.value = row ? cloneDeep(row) : cloneDeep(selection.value[0])
         }
         show.value = true
-        operate.value = operate
+        dialogOperate.value = operate
     }
 
     const handleOperate = async (formEl) => {
@@ -96,7 +97,7 @@ export function useScenicSpots() {
         await formEl.validate(async (valid) => {
             if (valid) {
                 const {value} = form
-                operate.value === 'add' ? add(value) : update(value)
+                dialogOperate.value === 'add' ? add(value) : update(value)
             }
         })
     }
@@ -110,8 +111,8 @@ export function useScenicSpots() {
         () => show.value,
         (value) => {
             if (!value) {
-                form.value = {status: true}
-                operate.value = ''
+                form.value = {}
+                dialogOperate.value = ''
             }
         },
         {deep: true}
@@ -140,7 +141,6 @@ export function useScenicSpots() {
         show,
         form,
         dialogRef,
-        operate,
         title,
         dialogRules,
         getTableData,

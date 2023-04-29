@@ -20,7 +20,7 @@ npm install
 
 ```shell
 npm run dev
-```~~~~
+```
 
 ### 2.安装基础依赖
 

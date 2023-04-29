@@ -11,7 +11,6 @@ const {
     loading,
     total,
     tableData,
-    operate,
     form,
     show,
     dialogRules,
@@ -36,7 +35,7 @@ const {
                 <el-input v-model="search.keywords" clearable placeholder="输入名称搜索" @clear="search.keywords = undefined"/>
             </el-col>
             <el-col :span="16">
-                <el-button type="success">搜索</el-button>
+                <el-button type="warning">查询</el-button>
             </el-col>
         </el-row>
         <el-row :gutter="10">
@@ -81,21 +80,22 @@ const {
             <el-table-column align="center" type="selection" width="30"/>
             <el-table-column v-if="columns[1].status" :label="columns[1].label" prop="id"/>
             <el-table-column v-if="columns[2].status" :label="columns[2].label" prop="name"/>
-            <el-table-column v-if="columns[3].status" :label="columns[3].label">
+            <el-table-column v-if="columns[3].status" :label="columns[3].label" prop="intro" show-overflow-tooltip/>
+            <el-table-column v-if="columns[4].status" :label="columns[4].label">
                 <template #default="{ row }">
                     {{ moment(row['createTime'])
                     .format('YYYY-MM-DD HH:mm:ss') }}
                 </template>
             </el-table-column>
-            <el-table-column v-if="columns[4].status" :label="columns[4].label">
+            <el-table-column v-if="columns[5].status" :label="columns[5].label">
                 <template #default="{ row }">
                     {{ moment(row['updateTime'])
                     .format('YYYY-MM-DD HH:mm:ss') }}
                 </template>
             </el-table-column>
-            <el-table-column v-if="columns[5].status" :label="columns[5].label" align="center" width="180">
+            <el-table-column v-if="columns[6].status" :label="columns[6].label" align="center" width="180">
                 <template #default="{ row }">
-                    <el-button type="primary">编辑</el-button>
+                    <el-button type="primary" @click="openDialog('edit',row)">编辑</el-button>
                     <el-popconfirm title="确认删除本条记录吗？" @confirm="handleDelete(row.id)">
                         <template #reference>
                             <el-button type="danger">删除</el-button>
@@ -127,11 +127,8 @@ const {
             <el-form-item label="名称" prop="name">
                 <el-input v-model="form.name"/>
             </el-form-item>
-            <el-form-item v-delEl="operate === 'add'" label="状态">
-                <el-radio-group v-model="form.status">
-                    <el-radio-button :label="true">启用</el-radio-button>
-                    <el-radio-button :label="false">禁用</el-radio-button>
-                </el-radio-group>
+            <el-form-item label="介绍">
+                <el-input v-model="form.intro" type="textarea" resize="none" :rows="3"/>
             </el-form-item>
         </el-form>
         <template #footer>
