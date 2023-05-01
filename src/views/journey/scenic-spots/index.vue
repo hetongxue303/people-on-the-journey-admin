@@ -57,7 +57,7 @@ const {
                 <el-tooltip :show-after="500" content="刷新" effect="light" placement="top">
                     <el-button class="grid-button" icon="Refresh" @click="getTableData"/>
                 </el-tooltip>
-                <el-popover :width="80" placement="bottom" style="" title="筛选列" trigger="click">
+                <el-popover :width="80" placement="bottom" title="筛选列" trigger="click">
                     <template v-for="item in columns" :key="item">
                         <el-checkbox v-model="item.status" :label="item.label"/>
                     </template>
