@@ -48,6 +48,6 @@ export function useLogin() {
     }
 
     return {
-        loginRef, loginRules, loading, loginForm, userLogin
+        loginRef, loginRules, loading, loginForm, userLogin, encryptPasswordByMD5
     }
 }
