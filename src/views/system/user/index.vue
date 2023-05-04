@@ -93,7 +93,7 @@ const {
                     <span v-else>保密</span>
                 </template>
             </el-table-column>
-            <el-table-column v-if="columns[5].status" :label="columns[5].label" prop="userinfo.email"/>
+            <el-table-column v-if="columns[5].status" :label="columns[5].label" show-overflow-tooltip prop="userinfo.email"/>
             <el-table-column v-if="columns[6].status" :label="columns[6].label">
                 <template #default="{ row }">
                     {{ moment(row['createTime'])
