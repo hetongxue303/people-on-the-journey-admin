@@ -4,10 +4,6 @@ import {Reload} from "@icon-park/vue-next";
 import moment from "moment";
 import {ElNotification} from "element-plus";
 import {useTravelAgency} from "@views/journey/travel-agency/hooks/useTravelAgency.js";
-import {getCascadeTreeUrl} from "@/api/common.js";
-import {onMounted, ref} from "vue";
-import {cloneDeep} from "lodash-es";
-import {filterProvince} from "@utils/filter/cascade.js";
 
 const {
     search,
@@ -28,17 +24,18 @@ const {
     openDialog,
     handleBatchDelete,
     handleDelete,
-    handleOperate
+    handleOperate,
+    handleUploadSuccess,
+    handleBeforeUpload
 } = useTravelAgency()
-
-const dataList = ref([])
-const value = ref([])
-onMounted(() => {
-    getCascadeTreeUrl()
-        .then(({data}) => {
-            dataList.value = cloneDeep(data.data)
-        })
-})
+// const dataList = ref([])
+// const value = ref([])
+// onMounted(() => {
+//     getCascadeTreeUrl()
+//         .then(({data}) => {
+//             dataList.value = cloneDeep(data.data)
+//         })
+// })
 </script>
 
 <template>
@@ -50,7 +47,7 @@ onMounted(() => {
             <el-col :span="16">
                 <el-button type="warning">查询</el-button>
             </el-col>
-            <el-cascader clearable v-model="value" :options="dataList" :props="{ expandTrigger: 'hover'}"/>
+            <!--            <el-cascader clearable v-model="value" :options="dataList" :props="{ expandTrigger: 'hover'}"/>-->
         </el-row>
         <el-row :gutter="10">
             <el-col :span="20">
@@ -93,21 +90,22 @@ onMounted(() => {
         >
             <el-table-column align="center" type="selection" width="30"/>
             <el-table-column v-if="columns[1].status" :label="columns[1].label" prop="id"/>
-            <el-table-column v-if="columns[2].status" :label="columns[2].label" prop="name"/>
-            <el-table-column v-if="columns[3].status" :label="columns[3].label" prop="intro" show-overflow-tooltip/>
-            <el-table-column v-if="columns[4].status" :label="columns[4].label">
+            <el-table-column v-if="columns[2].status" :label="columns[2].label" prop="image"/>
+            <el-table-column v-if="columns[3].status" :label="columns[3].label" prop="name"/>
+            <el-table-column v-if="columns[4].status" :label="columns[4].label" prop="intro" show-overflow-tooltip/>
+            <el-table-column v-if="columns[5].status" :label="columns[5].label">
                 <template #default="{ row }">
                     {{ moment(row['createTime'])
                     .format('YYYY-MM-DD HH:mm:ss') }}
                 </template>
             </el-table-column>
-            <el-table-column v-if="columns[5].status" :label="columns[5].label">
+            <el-table-column v-if="columns[6].status" :label="columns[6].label">
                 <template #default="{ row }">
                     {{ moment(row['updateTime'])
                     .format('YYYY-MM-DD HH:mm:ss') }}
                 </template>
             </el-table-column>
-            <el-table-column v-if="columns[6].status" :label="columns[6].label" align="center" width="180">
+            <el-table-column v-if="columns[7].status" :label="columns[7].label" align="center" width="180">
                 <template #default="{ row }">
                     <el-button type="primary" @click="openDialog('edit',row)">编辑</el-button>
                     <el-popconfirm title="确认删除本条记录吗？" @confirm="handleDelete(row.id)">
@@ -140,6 +138,26 @@ onMounted(() => {
         <el-form ref="dialogRef" :model="form" :rules="dialogRules" label-width="50">
             <el-form-item label="名称" prop="name">
                 <el-input v-model="form.name"/>
+            </el-form-item>
+            <el-form-item label="封面" prop="image">
+                <el-upload
+                    drag
+                    name="file"
+                    method="post"
+                    class="images-upload"
+                    :show-file-list="false"
+                    action="/api/file/upload/travel-agency"
+                    :on-success="handleUploadSuccess"
+                    :before-upload="handleBeforeUpload"
+                >
+                    <el-image v-if="form.image" :src="form.image" fit="fill" class="images-box" alt=""/>
+                    <div v-else class="images-box">
+                        <el-icon class="images-upload-icon" :size="67">
+                            <component is="upload-filled"/>
+                        </el-icon>
+                        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+                    </div>
+                </el-upload>
             </el-form-item>
             <el-form-item label="介绍">
                 <el-input v-model="form.intro" type="textarea" resize="none" :rows="3"/>
@@ -175,5 +193,41 @@ onMounted(() => {
 
 :deep(.el-row) {
     @apply mb-20px;
+}
+
+// image
+$images-upload-width: 350px;
+$images-upload-height: 200px;
+:deep(.images-upload) {
+    border: 1px dashed var(--el-border-color);
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: var(--el-transition-duration-fast);
+    width: $images-upload-width;
+    height: $images-upload-height;
+
+    &:hover {
+        border-color: var(--el-color-primary);
+    }
+}
+
+:deep(.el-upload-dragger) {
+    padding: 0;
+}
+
+.images-upload-icon {
+    color: #8c939d;
+    text-align: center;
+}
+
+.images-box {
+    width: $images-upload-width;
+    height: $images-upload-height;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
 </style>

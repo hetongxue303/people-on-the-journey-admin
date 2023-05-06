@@ -25,6 +25,7 @@ export const routes = [
         meta: {title: '无权访问'},
         component: () => import('@views/error/500.vue')
     },
+    /* layout */
     {
         path: '/',
         name: 'root',
@@ -80,5 +81,12 @@ export const routes = [
                 component: () => import('@views/about/index.vue')
             }
         ]
+    },
+    /* home */
+    {
+        name: 'home',
+        path: '/home',
+        meta: {title: '首页'},
+        component: () => import('@views/home/home.vue')
     }
 ]
