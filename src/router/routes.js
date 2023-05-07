@@ -87,7 +87,7 @@ export const routes = [
         name: 'home',
         path: '/',
         redirect: '/index',
-        component: () => import('@views/home/layout.vue'),
+        component: () => import('@views/home/components/layout.vue'),
         children: [
             {
                 name: '401',
@@ -136,18 +136,6 @@ export const routes = [
                 path: '/about',
                 meta: {title: '关于我们'},
                 component: () => import('@views/home/about.vue')
-            },
-            {
-                name: 'login',
-                path: '/login',
-                meta: {title: '用户登录'},
-                component: () => import('@views/home/login.vue')
-            },
-            {
-                name: 'register',
-                path: '/register',
-                meta: {title: '用户注册'},
-                component: () => import('@views/home/register.vue')
             }
         ]
     }

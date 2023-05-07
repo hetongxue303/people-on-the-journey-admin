@@ -1,6 +1,6 @@
 import md5 from 'js-md5'
 import {reactive, ref} from "vue";
-import {login} from "@/api/auth.js";
+import {adminLogin, login} from "@/api/auth.js";
 import {useRouter} from "vue-router";
 import {ElNotification} from "element-plus";
 import {setToken, setTokenTime} from "@utils/common.js";
@@ -29,7 +29,7 @@ export function useLogin() {
         formEl.validate(async (valid) => {
             if (valid) {
                 loading.value = true
-                login({
+                adminLogin({
                     username: loginForm.username, password: encryptPasswordByMD5(loginForm.password)
                 })
                     .then(({data, status}) => {
