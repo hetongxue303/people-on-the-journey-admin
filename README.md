@@ -36,3 +36,6 @@ npm install sass windicss vite-plugin-windicss @types/node -D
 npm uninstall eslint eslint-config-airbnb-base eslint-plugin-vue eslint-plugin-import vite-plugin-eslint prettier eslint-config-prettier eslint-plugin-prettier -D
 ```
 
+
+
+汪年  Y市  喜欢田径 28 帅 惯偷/强盗  喜欢宋小其 吴凡宗  

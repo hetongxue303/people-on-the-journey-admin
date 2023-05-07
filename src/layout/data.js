@@ -2,27 +2,27 @@ const data = [
     {
         title: '首页',
         icon: 'icon-park-home',
-        path: '/index'
+        path: '/admin/index'
     },
     {
         title: '旅途管理',
         icon: 'icon-park-camp',
-        path: '/journey',
+        path: '/admin/journey',
         children: [
             {
                 title: '旅游社',
                 icon: 'icon-park-trunk',
-                path: '/journey/travel-agency'
+                path: '/admin/journey/travel-agency'
             },
             {
                 title: '美食管理',
                 icon: 'icon-park-bowl',
-                path: '/journey/food'
+                path: '/admin/journey/food'
             },
             {
                 title: '景区管理',
                 icon: 'icon-park-landscape',
-                path: '/journey/scenic-spots'
+                path: '/admin/journey/scenic-spots'
             }
         ]
     },
@@ -34,24 +34,24 @@ const data = [
             {
                 title: '用户管理',
                 icon: 'icon-park-user',
-                path: '/system/user'
+                path: '/admin/system/user'
             },
             {
                 title: '角色管理',
                 icon: 'icon-park-permissions',
-                path: '/system/role'
+                path: '/admin/system/role'
             },
             {
                 title: '菜单管理',
                 icon: 'icon-park-application-menu',
-                path: '/system/menu'
+                path: '/admin/system/menu'
             },
         ]
     },
     {
         title: '关于系统',
         icon: 'icon-park-tips',
-        path: '/about'
+        path: '/admin/about'
     }
 ]
 

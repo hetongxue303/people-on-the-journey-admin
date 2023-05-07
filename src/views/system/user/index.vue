@@ -82,7 +82,7 @@ const {
             <el-table-column v-if="columns[1].status" :label="columns[1].label" prop="id"/>
             <el-table-column v-if="columns[2].status" :label="columns[2].label">
                 <template #default="{row}">
-                    <el-image :src="row.userinfo['avatar']" :style="{width:'30px',height:'30px'}"/>
+                    <el-image :src="row.userinfo['avatar']" class="table-image"/>
                 </template>
             </el-table-column>
             <el-table-column v-if="columns[3].status" :label="columns[3].label" prop="username"/>
@@ -131,7 +131,7 @@ const {
         v-model="show"
         :close-on-click-modal="false"
         :show-close="false"
-        :style="{ borderRadius: '10px' }"
+        class="dialog-common"
         :title="title"
         destroy-on-close
         width="30%"

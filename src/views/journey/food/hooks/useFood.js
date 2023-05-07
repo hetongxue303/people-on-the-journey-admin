@@ -15,6 +15,7 @@ export function useFood() {
     const columns = ref([
         {label: '全选', status: false},
         {label: 'ID', status: false},
+        {label: '封面', status: true},
         {label: '名称', status: true},
         {label: '介绍', status: true},
         {label: '创建时间', status: true},
@@ -95,6 +96,33 @@ export function useFood() {
             }
         })
     }
+
+    /* showImage */
+    const showImage = ref(false)
+    const imageUrl = ref('')
+    const openShowImage = (url) => {
+        showImage.value = true
+        imageUrl.value = url
+    }
+
+    /* upload */
+    const maxSize = ref(5)
+    const types = ref(['image/jpeg', 'image/png'])
+    const handleUploadSuccess = (response) => (form.value.image = clone(response.data))
+
+    const handleBeforeUpload = (file) => {
+        const {value} = maxSize
+        const {size, type} = file
+        if (size / 1000 / 1024 > value) {
+            ElNotification.warning(`图片最大为${value}MB`)
+            return false
+        }
+        if (types.value.indexOf(type) === -1) {
+            ElNotification.warning('图片类型错误')
+            return false
+        }
+    }
+
     watch(
         () => search,
         () => getTableData(),
@@ -137,6 +165,9 @@ export function useFood() {
         dialogRef,
         title,
         dialogRules,
+        showImage,
+        imageUrl,
+        dialogOperate,
         getTableData,
         selectionChange,
         changeCurrent,
@@ -144,6 +175,9 @@ export function useFood() {
         openDialog,
         handleOperate,
         handleDelete,
-        handleBatchDelete
+        openShowImage,
+        handleBatchDelete,
+        handleUploadSuccess,
+        handleBeforeUpload
     }
 }

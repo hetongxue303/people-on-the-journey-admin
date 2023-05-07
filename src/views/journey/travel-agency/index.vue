@@ -4,6 +4,14 @@ import {Reload} from "@icon-park/vue-next";
 import moment from "moment";
 import {ElNotification} from "element-plus";
 import {useTravelAgency} from "@views/journey/travel-agency/hooks/useTravelAgency.js";
+// const dataList = ref([])
+// const value = ref([])
+// onMounted(() => {
+//     getCascadeTreeUrl()
+//         .then(({data}) => {
+//             dataList.value = cloneDeep(data.data)
+//         })
+// })
 
 const {
     search,
@@ -17,6 +25,9 @@ const {
     title,
     dialogRef,
     columns,
+    showImage,
+    imageUrl,
+    dialogOperate,
     getTableData,
     selectionChange,
     changeSize,
@@ -25,17 +36,10 @@ const {
     handleBatchDelete,
     handleDelete,
     handleOperate,
+    openShowImage,
     handleUploadSuccess,
     handleBeforeUpload
 } = useTravelAgency()
-// const dataList = ref([])
-// const value = ref([])
-// onMounted(() => {
-//     getCascadeTreeUrl()
-//         .then(({data}) => {
-//             dataList.value = cloneDeep(data.data)
-//         })
-// })
 </script>
 
 <template>
@@ -90,7 +94,11 @@ const {
         >
             <el-table-column align="center" type="selection" width="30"/>
             <el-table-column v-if="columns[1].status" :label="columns[1].label" prop="id"/>
-            <el-table-column v-if="columns[2].status" :label="columns[2].label" prop="image"/>
+            <el-table-column v-if="columns[2].status" :label="columns[2].label" prop="image">
+                <template #default="{row}">
+                    <el-image :src="row.image" class="table-image" @click="openShowImage(row.image)"/>
+                </template>
+            </el-table-column>
             <el-table-column v-if="columns[3].status" :label="columns[3].label" prop="name"/>
             <el-table-column v-if="columns[4].status" :label="columns[4].label" prop="intro" show-overflow-tooltip/>
             <el-table-column v-if="columns[5].status" :label="columns[5].label">
@@ -127,32 +135,43 @@ const {
     </el-card>
 
     <el-dialog
+        v-model="showImage"
+        :show-close="false"
+        class="dialog-common"
+        destroy-on-close
+        title="查看图像"
+        width="33%"
+    >
+        <el-image :src="imageUrl" class="table-image-show"/>
+    </el-dialog>
+
+    <el-dialog
         v-model="show"
         :close-on-click-modal="false"
         :show-close="false"
-        :style="{ borderRadius: '10px' }"
+        class="dialog-common"
         :title="title"
         destroy-on-close
-        width="30%"
+        width="33%"
     >
         <el-form ref="dialogRef" :model="form" :rules="dialogRules" label-width="50">
             <el-form-item label="名称" prop="name">
-                <el-input v-model="form.name"/>
+                <el-input v-model="form.name" class="table-input"/>
             </el-form-item>
             <el-form-item label="封面" prop="image">
                 <el-upload
-                    drag
-                    name="file"
-                    method="post"
-                    class="images-upload"
+                    :before-upload="handleBeforeUpload"
+                    :on-success="handleUploadSuccess"
                     :show-file-list="false"
                     action="/api/file/upload/travel-agency"
-                    :on-success="handleUploadSuccess"
-                    :before-upload="handleBeforeUpload"
+                    class="images-upload"
+                    drag
+                    method="post"
+                    name="file"
                 >
-                    <el-image v-if="form.image" :src="form.image" fit="fill" class="images-box" alt=""/>
+                    <el-image v-if="form.image" :src="form.image" :title="dialogOperate!=='add'?'点击更换壁纸':undefined" class="images-box" fit="fill"/>
                     <div v-else class="images-box">
-                        <el-icon class="images-upload-icon" :size="67">
+                        <el-icon :size="67" class="images-upload-icon">
                             <component is="upload-filled"/>
                         </el-icon>
                         <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
@@ -160,7 +179,7 @@ const {
                 </el-upload>
             </el-form-item>
             <el-form-item label="介绍">
-                <el-input v-model="form.intro" type="textarea" resize="none" :rows="3"/>
+                <el-input v-model="form.intro" class="table-input" :rows="5" resize="none" type="textarea"/>
             </el-form-item>
         </el-form>
         <template #footer>

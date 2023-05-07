@@ -1,0 +1,35 @@
+.table-image {
+    height: 35px;
+    width: 35px;
+    cursor: pointer;
+}
+
+.table-image-show {
+    height: 100%;
+    width: 100%;
+}
+
+.table-input {
+    width: 350px;
+}
+
+.dialog-common {
+    border-radius: 10px;
+}
+
+.result-common {
+    position: relative;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -70%)
+}
+
+.home-logo-box {
+    padding: 0;
+    cursor: pointer;
+}
+
+.home-logo {
+    height: 48px;
+    width: 140px
+}

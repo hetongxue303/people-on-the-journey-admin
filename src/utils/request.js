@@ -35,8 +35,9 @@ axios.interceptors.response.use(
         const {response} = error
         if (response.status === 500) ElNotification.error(response.data.message || '服务器异常')
         if (response.status === 401) {
-            ElNotification.error(response.data.message || '身份过期')
-            location.replace('/login')
+            console.log(response.data.message)
+            ElNotification.error('身份过期');
+            window.location.replace('/admin/login');
             // useUserStore().systemLogout()
         }
         return Promise.reject(error)

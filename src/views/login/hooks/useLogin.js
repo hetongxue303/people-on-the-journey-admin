@@ -37,7 +37,7 @@ export function useLogin() {
                             ElNotification.success('登陆成功')
                             setToken(data.data.value, data.data.timeout)
                             setTokenTime(data.data.timeout)
-                            router.push(redirect.value || '/index')
+                            router.push(redirect.value || '/admin/index')
                             return
                         }
                         ElNotification.error(data.message || '登陆失败，请重新登录')

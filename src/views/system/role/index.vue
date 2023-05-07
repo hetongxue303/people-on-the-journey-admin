@@ -118,7 +118,7 @@ const {
         v-model="show"
         :close-on-click-modal="false"
         :show-close="false"
-        :style="{ borderRadius: '10px' }"
+        class="dialog-common"
         :title="title"
         destroy-on-close
         width="30%"

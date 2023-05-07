@@ -17,14 +17,20 @@ const {
     title,
     dialogRef,
     columns,
+    imageUrl,
+    showImage,
+    dialogOperate,
     getTableData,
     selectionChange,
     changeSize,
+    openShowImage,
     changeCurrent,
     openDialog,
     handleBatchDelete,
     handleDelete,
-    handleOperate
+    handleOperate,
+    handleBeforeUpload,
+    handleUploadSuccess
 } = useFood()
 </script>
 
@@ -79,21 +85,26 @@ const {
         >
             <el-table-column align="center" type="selection" width="30"/>
             <el-table-column v-if="columns[1].status" :label="columns[1].label" prop="id"/>
-            <el-table-column v-if="columns[2].status" :label="columns[2].label" prop="name"/>
-            <el-table-column v-if="columns[3].status" :label="columns[3].label" prop="intro" show-overflow-tooltip/>
-            <el-table-column v-if="columns[4].status" :label="columns[4].label">
+            <el-table-column v-if="columns[2].status" :label="columns[2].label" prop="image">
+                <template #default="{row}">
+                    <el-image :src="row.image" class="table-image" @click="openShowImage(row.image)"/>
+                </template>
+            </el-table-column>
+            <el-table-column v-if="columns[3].status" :label="columns[3].label" prop="name"/>
+            <el-table-column v-if="columns[4].status" :label="columns[4].label" prop="intro" show-overflow-tooltip/>
+            <el-table-column v-if="columns[5].status" :label="columns[5].label">
                 <template #default="{ row }">
                     {{ moment(row['createTime'])
                     .format('YYYY-MM-DD HH:mm:ss') }}
                 </template>
             </el-table-column>
-            <el-table-column v-if="columns[5].status" :label="columns[5].label">
+            <el-table-column v-if="columns[6].status" :label="columns[6].label">
                 <template #default="{ row }">
                     {{ moment(row['updateTime'])
                     .format('YYYY-MM-DD HH:mm:ss') }}
                 </template>
             </el-table-column>
-            <el-table-column v-if="columns[6].status" :label="columns[6].label" align="center" width="180">
+            <el-table-column v-if="columns[7].status" :label="columns[7].label" align="center" width="180">
                 <template #default="{ row }">
                     <el-button type="primary" @click="openDialog('edit',row)">编辑</el-button>
                     <el-popconfirm title="确认删除本条记录吗？" @confirm="handleDelete(row.id)">
@@ -115,20 +126,51 @@ const {
     </el-card>
 
     <el-dialog
+        v-model="showImage"
+        :show-close="false"
+        class="dialog-common"
+        destroy-on-close
+        title="查看图像"
+        width="33%"
+    >
+        <el-image :src="imageUrl" class="table-image-show"/>
+    </el-dialog>
+
+    <el-dialog
         v-model="show"
         :close-on-click-modal="false"
         :show-close="false"
-        :style="{ borderRadius: '10px' }"
+        class="dialog-common"
         :title="title"
         destroy-on-close
-        width="30%"
+        width="33%"
     >
         <el-form ref="dialogRef" :model="form" :rules="dialogRules" label-width="50">
             <el-form-item label="名称" prop="name">
-                <el-input v-model="form.name"/>
+                <el-input v-model="form.name" class="table-input"/>
+            </el-form-item>
+            <el-form-item label="封面" prop="image">
+                <el-upload
+                    :before-upload="handleBeforeUpload"
+                    :on-success="handleUploadSuccess"
+                    :show-file-list="false"
+                    action="/api/file/upload/foods"
+                    class="images-upload"
+                    drag
+                    method="post"
+                    name="file"
+                >
+                    <el-image v-if="form.image" :src="form.image" :title="dialogOperate!=='add'?'点击更换壁纸':undefined" class="images-box" fit="fill"/>
+                    <div v-else class="images-box">
+                        <el-icon :size="67" class="images-upload-icon">
+                            <component is="upload-filled"/>
+                        </el-icon>
+                        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+                    </div>
+                </el-upload>
             </el-form-item>
             <el-form-item label="介绍">
-                <el-input v-model="form.intro" type="textarea" resize="none" :rows="3"/>
+                <el-input v-model="form.intro" class="table-input" type="textarea" resize="none" :rows="3"/>
             </el-form-item>
         </el-form>
         <template #footer>
@@ -161,5 +203,41 @@ const {
 
 :deep(.el-row) {
     @apply mb-20px;
+}
+
+// image
+$images-upload-width: 350px;
+$images-upload-height: 200px;
+:deep(.images-upload) {
+    border: 1px dashed var(--el-border-color);
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: var(--el-transition-duration-fast);
+    width: $images-upload-width;
+    height: $images-upload-height;
+
+    &:hover {
+        border-color: var(--el-color-primary);
+    }
+}
+
+:deep(.el-upload-dragger) {
+    padding: 0;
+}
+
+.images-upload-icon {
+    color: #8c939d;
+    text-align: center;
+}
+
+.images-box {
+    width: $images-upload-width;
+    height: $images-upload-height;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
 </style>

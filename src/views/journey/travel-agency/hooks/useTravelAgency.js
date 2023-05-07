@@ -80,7 +80,10 @@ export function useTravelAgency() {
     const dialogRef = ref(null)
     const dialogOperate = ref('')
     const title = ref('')
-    const dialogRules = reactive({name: [{required: true, message: '名称不能为空', trigger: 'blur'}]})
+    const dialogRules = reactive({
+        name: [{required: true, message: '请输入名称', trigger: 'blur'}],
+        image: [{required: true, message: '请上传封面', trigger: 'blur'}]
+    })
     const selectionChange = (data) => selection.value = data
     const openDialog = (operate, row = undefined) => {
         if (operate === 'add') {
@@ -102,6 +105,33 @@ export function useTravelAgency() {
             }
         })
     }
+
+    /* showImage */
+    const showImage = ref(false)
+    const imageUrl = ref('')
+    const openShowImage = (url) => {
+        showImage.value = true
+        imageUrl.value = url
+    }
+
+    /* upload */
+    const maxSize = ref(5)
+    const types = ref(['image/jpeg', 'image/png'])
+    const handleUploadSuccess = (response) => (form.value.image = clone(response.data))
+
+    const handleBeforeUpload = (file) => {
+        const {value} = maxSize
+        const {size, type} = file
+        if (size / 1000 / 1024 > value) {
+            ElNotification.warning(`图片最大为${value}MB`)
+            return false
+        }
+        if (types.value.indexOf(type) === -1) {
+            ElNotification.warning('图片类型错误')
+            return false
+        }
+    }
+
     watch(
         () => search,
         () => getTableData(),
@@ -132,24 +162,6 @@ export function useTravelAgency() {
 
     onMounted(() => getTableData())
 
-
-    const maxSize = ref(5)
-    const types = ref(['image/jpeg', 'image/png'])
-    const handleUploadSuccess = (response) => (form.value.image = clone(response.data))
-
-    const handleBeforeUpload = (file) => {
-        const {value} = maxSize
-        const {size, type} = file
-        if (size / 1000 / 1024 > value) {
-            ElNotification.warning(`图片最大为${value}MB`)
-            return false
-        }
-        if (types.value.indexOf(type) === -1) {
-            ElNotification.warning('图片类型错误')
-            return false
-        }
-    }
-
     return {
         tableData,
         total,
@@ -162,6 +174,9 @@ export function useTravelAgency() {
         dialogRef,
         title,
         dialogRules,
+        showImage,
+        imageUrl,
+        dialogOperate,
         getTableData,
         selectionChange,
         changeCurrent,
@@ -169,6 +184,7 @@ export function useTravelAgency() {
         openDialog,
         handleOperate,
         handleDelete,
+        openShowImage,
         handleBatchDelete,
         handleUploadSuccess,
         handleBeforeUpload
