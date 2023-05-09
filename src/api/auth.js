@@ -37,3 +37,11 @@ export function logout() {
         url: `${base_url}/user/logout`
     })
 }
+
+export function modifyPassword(data) {
+    return axios({
+        method: 'PUT',
+        url: `${base_url}/user/update/password`,
+        data
+    })
+}

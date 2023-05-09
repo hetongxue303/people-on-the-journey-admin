@@ -1,8 +1,8 @@
 <script setup>
 import {reactive, ref} from 'vue'
 import logo from '@assets/images/logo.png'
-import {login, logout, register} from "@/api/auth.js";
-import {ElMessageBox, ElNotification} from "element-plus";
+import {login, logout, modifyPassword, register} from "@/api/auth.js";
+import {ElNotification} from "element-plus";
 import {setToken, setTokenTime} from "@utils/common.js";
 import {useLogin} from "@views/login/hooks/useLogin.js";
 import navbarData from "@views/home/data/data.js";
@@ -12,7 +12,7 @@ import {confirmBox} from "@utils/element.js";
 const activeIndex = ref('/index')
 const changePath = (path) => {
     activeIndex.value = path
-    window.location.href(path)
+    window.location.href = path
 }
 const loginDialog = ref(false)
 const openDialog = (oop) => {
@@ -90,9 +90,70 @@ const userLogout = () => {
             })
     }, undefined, undefined)
 }
+
+const upwDialog = ref(false)
+const upwRef = ref(null)
+const cpw = ref(null)
+const upwFrom = reactive({})
+const upwRules = reactive({
+    oldPassword: [{required: true, message: '请输入原密码', trigger: 'blur'}],
+    newPassword: [{required: true, message: '请输入新密码', trigger: 'blur'}],
+    confirmPassword: [{required: true, message: '请确认密码', trigger: 'blur'}]
+})
+const updatePassword = async (formEl) => {
+    if (!formEl) return
+    formEl.validate(async (valid) => {
+        if (valid) {
+            if (upwFrom.newPassword !== upwFrom.confirmPassword) {
+                ElNotification.warning('两次输入的密码不匹配')
+                cpw.value.focus()
+                return
+            }
+            modifyPassword({
+                oldPassword: encryptPasswordByMD5(upwFrom.oldPassword),
+                newPassword: encryptPasswordByMD5(upwFrom.newPassword),
+                confirmPassword: encryptPasswordByMD5(upwFrom.confirmPassword)
+            })
+                .then(({data, status}) => {
+                    if (status === 200 && data.code === 200) {
+                        upwDialog.value = false
+                        user.userLogout()
+                        openDialog('L')
+                        ElNotification.success('修改成功,请重新登录！')
+                    }
+                })
+        }
+    })
+}
 </script>
 
 <template>
+    <el-dialog v-model="upwDialog"
+               :close-on-click-modal="false"
+               :show-close="false"
+               align-center
+               class="dialog-common"
+               destroy-on-close
+               title="修改密码"
+               width="30%">
+        <el-form ref="upwRef" :model="upwFrom" :rules="upwRules" label-width="80">
+            <el-form-item label="原密码" prop="oldPassword">
+                <el-input v-model="upwFrom.oldPassword" show-password/>
+            </el-form-item>
+            <el-form-item label="新密码" prop="newPassword">
+                <el-input v-model="upwFrom.newPassword" show-password/>
+            </el-form-item>
+            <el-form-item label="确认密码" prop="confirmPassword">
+                <el-input ref="cpw" v-model="upwFrom.confirmPassword" show-password/>
+            </el-form-item>
+        </el-form>
+        <template #footer>
+            <el-button @click="upwDialog = false">返回</el-button>
+            <el-button type="primary" @click="updatePassword(upwRef)">
+                确认
+            </el-button>
+        </template>
+    </el-dialog>
     <el-dialog v-model="loginDialog"
                :close-on-click-modal="false"
                :title="title"
@@ -136,10 +197,27 @@ const userLogout = () => {
             </div>
             <div class="flex-grow"/>
             <div style="display: flex;justify-content: center;align-items: center;margin-right: 10px">
-                <el-button v-show="!user.getUserId" text type="success" @click="openDialog('L')">登录</el-button>
-                <el-button v-show="!user.getUserId" text type="primary" @click="openDialog('R')">注册</el-button>
-                <span v-show="user.getUserId" style="margin-right: 10px">欢迎，{{ user.getUsername }}</span>
-                <el-button v-show="user.getUserId" size="small" type="primary" @click="userLogout">退出登录</el-button>
+                <el-link v-show="!user.getUserId" :underline="false" style="font-size: 12px" type="info" @click="openDialog('L')">
+                    您好，请登录
+                </el-link>
+                <el-link v-show="!user.getUserId" :underline="false" style="font-size: 12px" type="danger" @click="openDialog('R')">
+                    &nbsp;&nbsp;免费注册
+                </el-link>
+                <el-dropdown v-show="user.getUserId" style="margin-right: 10px">
+                    <span class="el-dropdown-link">
+                     {{ user.getUsername }}
+                      <el-icon class="el-icon--right" size="10">
+                       <component is="arrow-down"/>
+                      </el-icon>
+                    </span>
+                    <template #dropdown>
+                        <el-dropdown-menu>
+                            <el-dropdown-item>个人信息</el-dropdown-item>
+                            <el-dropdown-item @click="upwDialog=true">修改密码</el-dropdown-item>
+                            <el-dropdown-item divided @click="userLogout">退出登录</el-dropdown-item>
+                        </el-dropdown-menu>
+                    </template>
+                </el-dropdown>
             </div>
             <el-menu-item v-for="item in navbarData" :key="item" :index="item.path">{{ item.title }}</el-menu-item>
         </el-menu>
@@ -173,5 +251,13 @@ const userLogout = () => {
 
 .flex-grow {
     flex-grow: 1;
+}
+
+/* dropdown */
+.example-showcase .el-dropdown-link {
+    cursor: pointer;
+    color: var(--el-color-primary);
+    display: flex;
+    align-items: center;
 }
 </style>

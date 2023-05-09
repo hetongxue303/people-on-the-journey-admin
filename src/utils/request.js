@@ -1,6 +1,7 @@
 import axios from 'axios'
 import {ElNotification} from 'element-plus'
 import {getToken} from './common'
+import useUser from "@store/modules/user.js";
 
 const base_url = import.meta.env.VITE_BASIC_URL
 
@@ -33,12 +34,17 @@ axios.interceptors.response.use(
     },
     async (error) => {
         const {response} = error
-        if (response.status === 500) ElNotification.error(response.data.message || '服务器异常')
+        if (response.status === 500) {
+            ElNotification.error(response.data.message || '服务器异常')
+            return
+        }
         if (response.status === 401) {
             console.log(response.data.message)
             ElNotification.error('身份过期');
-            window.location.replace('/admin/login');
-            // useUserStore().systemLogout()
+            useUser().isAdmin ? window.location.replace('/admin/login') : window.location.replace('/index')
+            useUser()
+                .userLogout()
+            return
         }
         return Promise.reject(error)
     }
