@@ -53,5 +53,8 @@ export const cookies = {
     },
     remove(key) {
         Cookies.remove(key)
+    },
+    clear() {
+        Cookies.clear()
     }
 }

@@ -1,11 +1,13 @@
 <script setup>
 import {reactive, ref} from 'vue'
 import logo from '@assets/images/logo.png'
-import {login, register} from "@/api/auth.js";
-import {ElNotification} from "element-plus";
+import {login, logout, register} from "@/api/auth.js";
+import {ElMessageBox, ElNotification} from "element-plus";
 import {setToken, setTokenTime} from "@utils/common.js";
 import {useLogin} from "@views/login/hooks/useLogin.js";
 import navbarData from "@views/home/data/data.js";
+import useUser from "@store/modules/user.js";
+import {confirmBox} from "@utils/element.js";
 
 const activeIndex = ref('/index')
 const changePath = (path) => {
@@ -22,6 +24,7 @@ const openDialog = (oop) => {
     status.value = oop
     loginDialog.value = true
 }
+const user = useUser()
 const {encryptPasswordByMD5} = useLogin()
 const loading = ref(false)
 const con = ref(null)
@@ -46,6 +49,7 @@ const userOOP = async (formEl) => {
                             ElNotification.success('登陆成功')
                             setToken(data.data.value, data.data.timeout)
                             setTokenTime(data.data.timeout)
+                            user.setLoginInfo(data.data)
                             window.location.reload()
                             return
                         }
@@ -71,6 +75,20 @@ const userOOP = async (formEl) => {
             }
         }
     })
+}
+
+const userLogout = () => {
+    confirmBox("确定退出登录吗?", '提示', 'warning', () => {
+        logout()
+            .then(({data}) => {
+                if (data.code === 200) {
+                    user.userLogout()
+                    ElNotification.success('注销成功')
+                    return
+                }
+                ElNotification.error('注销失败，请重试！')
+            })
+    }, undefined, undefined)
 }
 </script>
 
@@ -118,8 +136,10 @@ const userOOP = async (formEl) => {
             </div>
             <div class="flex-grow"/>
             <div style="display: flex;justify-content: center;align-items: center;margin-right: 10px">
-                <el-button text type="success" @click="openDialog('L')">登录</el-button>
-                <el-button text type="primary" @click="openDialog('R')">注册</el-button>
+                <el-button v-show="!user.getUserId" text type="success" @click="openDialog('L')">登录</el-button>
+                <el-button v-show="!user.getUserId" text type="primary" @click="openDialog('R')">注册</el-button>
+                <span v-show="user.getUserId" style="margin-right: 10px">欢迎，{{ user.getUsername }}</span>
+                <el-button v-show="user.getUserId" size="small" type="primary" @click="userLogout">退出登录</el-button>
             </div>
             <el-menu-item v-for="item in navbarData" :key="item" :index="item.path">{{ item.title }}</el-menu-item>
         </el-menu>
