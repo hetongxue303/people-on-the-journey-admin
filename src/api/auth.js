@@ -38,6 +38,13 @@ export function logout() {
     })
 }
 
+export function getUserinfo() {
+    return axios({
+        method: 'GET',
+        url: `${base_url}/user/userinfo`
+    })
+}
+
 export function modifyPassword(data) {
     return axios({
         method: 'PUT',

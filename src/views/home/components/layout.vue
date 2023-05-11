@@ -1,13 +1,15 @@
 <script setup>
-import {reactive, ref} from 'vue'
+import {reactive, ref, watch} from 'vue'
 import logo from '@assets/images/logo.png'
-import {login, logout, modifyPassword, register} from "@/api/auth.js";
+import {getUserinfo, login, logout, modifyPassword, register} from "@/api/auth.js";
 import {ElNotification} from "element-plus";
 import {setToken, setTokenTime} from "@utils/common.js";
 import {useLogin} from "@views/login/hooks/useLogin.js";
 import navbarData from "@views/home/data/data.js";
 import useUser from "@store/modules/user.js";
 import {confirmBox} from "@utils/element.js";
+import {clone, cloneDeep} from "lodash-es";
+import {updateUserinfoUrl} from "@/api/userinfo.js";
 
 const activeIndex = ref('/index')
 const changePath = (path) => {
@@ -125,9 +127,112 @@ const updatePassword = async (formEl) => {
         }
     })
 }
+
+const infoDialog = ref(false)
+const infoRef = ref(null)
+const infoFrom = ref({})
+const infoRules = reactive({
+    avatar: [{required: true, message: '请上传头像', trigger: 'blur'}],
+    nickname: [{required: true, message: '请输入昵称', trigger: 'blur'}],
+    gender: [{required: true, message: '请选择性别', trigger: 'blur'}],
+    email: [{required: true, message: '请输入邮箱', trigger: 'blur'}]
+})
+watch(() => infoDialog.value,
+    (value) =>
+        value ? getUserinfo()
+            .then(({data}) => infoFrom.value = data.code === 200 ? cloneDeep(data.data) : {}) : infoFrom.value = {},
+    {deep: true}
+)
+/* upload */
+const maxSize = ref(5)
+const types = ref(['image/jpeg', 'image/png'])
+const handleUploadSuccess = (response) => (infoFrom.value.avatar = clone(response.data))
+
+const handleBeforeUpload = (file) => {
+    const {value} = maxSize
+    const {size, type} = file
+    if (size / 1000 / 1024 > value) {
+        ElNotification.warning(`图片最大为${value}MB`)
+        return false
+    }
+    if (types.value.indexOf(type) === -1) {
+        ElNotification.warning('图片类型错误')
+        return false
+    }
+}
+const saveUserinfo = async (formEl) => {
+    if (!formEl) return
+    formEl.validate(async (valid) => {
+        if (valid) {
+            updateUserinfoUrl(infoFrom.value)
+                .then(({data}) => {
+                    if (data.code === 200) {
+                        infoDialog.value = false
+                        user.userinfo = cloneDeep(infoFrom.value)
+                        ElNotification.success('资料修改成功')
+                        return
+                    }
+                    ElNotification.error('资料修改失败，请重试！')
+                })
+        }
+    })
+}
 </script>
 
 <template>
+    <el-dialog v-model="infoDialog"
+               :close-on-click-modal="false"
+               :show-close="false"
+               align-center
+               class="dialog-common"
+               destroy-on-close
+               title="个人信息"
+               width="30%">
+        <el-form ref="infoRef" :model="infoFrom" :rules="infoRules" label-width="50">
+            <el-form-item label="头像" prop="avatar">
+                <el-upload
+                    :before-upload="handleBeforeUpload"
+                    :on-success="handleUploadSuccess"
+                    :show-file-list="false"
+                    action="/api/file/upload/avatar"
+                    class="images-upload"
+                    drag
+                    method="post"
+                    name="file"
+                >
+                    <el-image v-if="infoFrom.avatar" :src="infoFrom.avatar" class="images-box" fit="fill" title="点击更换头像"/>
+                    <div v-else class="images-box">
+                        <el-icon :size="50" class="images-upload-icon">
+                            <component is="upload-filled"/>
+                        </el-icon>
+                        <div class="el-upload__text" style="font-size: 10px">将文件拖到此处，或<em>点击上传</em></div>
+                    </div>
+                </el-upload>
+            </el-form-item>
+            <el-form-item label="昵称" prop="nickname">
+                <el-input v-model="infoFrom['nickname']"/>
+            </el-form-item>
+            <el-form-item label="性别" prop="gender">
+                <el-radio-group v-model="infoFrom.gender">
+                    <el-radio-button :label="1">男</el-radio-button>
+                    <el-radio-button :label="2">女</el-radio-button>
+                    <el-radio-button :label="3">保密</el-radio-button>
+                </el-radio-group>
+            </el-form-item>
+            <el-form-item label="邮箱" prop="email">
+                <el-input v-model="infoFrom['email']"/>
+            </el-form-item>
+            <el-form-item label="介绍">
+                <el-input v-model="infoFrom.intro" placeholder="用户太懒，没有介绍！" :rows="3" resize="none" type="textarea"/>
+            </el-form-item>
+        </el-form>
+        <template #footer>
+            <el-button @click="infoDialog = false">返回</el-button>
+            <el-button type="primary" @click="saveUserinfo(infoRef)">
+                确认
+            </el-button>
+        </template>
+    </el-dialog>
     <el-dialog v-model="upwDialog"
                :close-on-click-modal="false"
                :show-close="false"
@@ -203,16 +308,17 @@ const updatePassword = async (formEl) => {
                 <el-link v-show="!user.getUserId" :underline="false" style="font-size: 12px" type="danger" @click="openDialog('R')">
                     &nbsp;&nbsp;免费注册
                 </el-link>
-                <el-dropdown v-show="user.getUserId" style="margin-right: 10px">
+                <el-image v-show="user.getUserId" :src="user.getUserinfo['avatar']" style="width: 45px;height: 45px;border-radius: 50%"/>
+                <el-dropdown v-show="user.getUserId" style="margin:0 10px 0 5px">
                     <span class="el-dropdown-link">
-                     {{ user.getUsername }}
-                      <el-icon class="el-icon--right" size="10">
-                       <component is="arrow-down"/>
-                      </el-icon>
+                        {{ user.getUserinfo['nickname'] }}
+                            <el-icon class="el-icon--right" size="10">
+                                <component is="arrow-down"/>
+                            </el-icon>
                     </span>
                     <template #dropdown>
                         <el-dropdown-menu>
-                            <el-dropdown-item>个人信息</el-dropdown-item>
+                            <el-dropdown-item @click="infoDialog=true">个人信息</el-dropdown-item>
                             <el-dropdown-item @click="upwDialog=true">修改密码</el-dropdown-item>
                             <el-dropdown-item divided @click="userLogout">退出登录</el-dropdown-item>
                         </el-dropdown-menu>
@@ -259,5 +365,41 @@ const updatePassword = async (formEl) => {
     color: var(--el-color-primary);
     display: flex;
     align-items: center;
+}
+
+// image
+$images-upload-width: 200px;
+$images-upload-height: 200px;
+:deep(.images-upload) {
+    border: 1px dashed var(--el-border-color);
+    border-radius: 50%;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: var(--el-transition-duration-fast);
+    width: $images-upload-width;
+    height: $images-upload-height;
+
+    &:hover {
+        border-color: var(--el-color-primary);
+    }
+}
+
+:deep(.el-upload-dragger) {
+    padding: 0;
+}
+
+.images-upload-icon {
+    color: #8c939d;
+    text-align: center;
+}
+
+.images-box {
+    width: $images-upload-width;
+    height: $images-upload-height;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
 </style>
