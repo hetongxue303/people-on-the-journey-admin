@@ -367,6 +367,10 @@ const saveUserinfo = async (formEl) => {
     align-items: center;
 }
 
+:deep(.el-backtop) {
+    color: red;
+}
+
 // image
 $images-upload-width: 200px;
 $images-upload-height: 200px;
