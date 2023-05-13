@@ -3,34 +3,28 @@ import index1 from '@assets/images/index1.jpg'
 import index2 from '@assets/images/index2.png'
 import index3 from '@assets/images/index3.png'
 import index4 from '@assets/images/index4.png'
-
-import Panel from '@views/home/components/panel/index.vue'
+import About from "@views/home/components/panel/about.vue";
+import List from "@views/home/components/panel/list.vue";
+import Food from "@views/home/components/panel/food.vue";
 
 const images = [index1, index2, index3, index4]
 </script>
 
 <template>
-    <el-carousel :interval="2000" arrow="always" height="500px">
-        <el-carousel-item v-for="item in images" :key="item">
-            <el-image :src="item" fit="contain"/>
-        </el-carousel-item>
-    </el-carousel>
+    <!--    <el-carousel :interval="2000" arrow="always" height="500px">-->
+    <!--        <el-carousel-item v-for="item in images" :key="item">-->
+    <!--            <el-image :src="item" fit="contain"/>-->
+    <!--        </el-carousel-item>-->
+    <!--    </el-carousel>-->
+    <el-image :src="index2"/>
     <div class="content">
-        <Panel title="旅社推荐" sub-title="常见的旅社">
-            <template #content>
-                content
-            </template>
-        </Panel>
-        <Panel title="美食推荐" sub-title="常见的美食">
-            <template #content>
-                content
-            </template>
-        </Panel>
-        <Panel title="景区推荐" sub-title="常见的景区">
-            <template #content>
-                content
-            </template>
-        </Panel>
+        <about/>
+        <list/>
+        <food/>
+        <div style="display: flex;justify-content: center;align-items: center;width: 100%;height:900px;background-color: rgb(19, 22, 37)">
+
+        </div>
+
         <div class="footer">
             footer内容
         </div>
@@ -38,7 +32,7 @@ const images = [index1, index2, index3, index4]
 
 </template>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 /* carousel */
 .el-carousel__item h3 {
     color: #475669;
@@ -58,10 +52,12 @@ const images = [index1, index2, index3, index4]
 
 /* content */
 .content {
+    margin-top: -6px;
     width: 100%;
-    height: 2160px;
+    height: 2500px;
     display: flex;
     flex-direction: column;
+    align-items: center;
 }
 
 /* footer */
