@@ -8,7 +8,7 @@
         <div class="title">尽享度假时光</div>
 
         <div class="panel">
-            <div class="mr-20px">
+            <div class="mr-20px card-box">
                 <el-image src="https://26823097.s61i.faiusr.com/2/AD0IuZPlDBACGAAg6rb1ggYoufXIxgYwgAM4uAM.jpg.webp"/>
                 <div class="desc-box">
                     <div class="desc-box-title">美丽的江苏</div>
@@ -16,7 +16,7 @@
                 </div>
             </div>
 
-            <div class="mr-20px">
+            <div class="mr-20px card-box">
                 <el-image src="https://26823097.s61i.faiusr.com/2/AD0IuZPlDBACGAAggOn1ggYo7Om4bzCAAzi4Aw.jpg.webp"/>
                 <div class="desc-box">
                     <div class="desc-box-title">重庆</div>
@@ -24,7 +24,7 @@
                 </div>
             </div>
 
-            <div>
+            <div class="card-box">
                 <el-image src="https://26823097.s61i.faiusr.com/2/AD0IuZPlDBACGAAgxuj1ggYo0ume6gUwgAM4uAM.jpg.webp"/>
                 <div class="desc-box">
                     <div class="desc-box-title">重庆</div>
@@ -38,12 +38,11 @@
 
 <style scoped lang="scss">
 .parent {
-    padding-top: 150px;
     display: flex;
     justify-content: center;
     align-items: center;
     width: 100%;
-    height: 900px;
+    height: 800px;
     background-color: rgb(22, 21, 39);
     flex-direction: column;
 }
@@ -51,7 +50,7 @@
 .title {
     color: white;
     font-size: 26px;
-    padding: 10px 0 30px 0;
+    padding: 30px 0 30px 0;
 }
 
 .panel {
@@ -74,5 +73,15 @@
         color: rgb(148, 150, 161);
         font-size: 10px;
     }
+}
+
+.card-box {
+    width: 384px;
+    height: 530px;
+    transition: all ease-in-out 0.3s;
+}
+
+.card-box:hover {
+    transform: scale(1.05);
 }
 </style>

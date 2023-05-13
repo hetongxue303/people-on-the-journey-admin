@@ -21,7 +21,7 @@ const img = ref('https://26823097.s61i.faiusr.com/2/AD0IuZPlDBACGAAgy7XrggYo5aeq
 <style scoped lang="scss">
 .parent {
     width: 100%;
-    height: 1100px;
+    height: 750px;
     display: flex;
     flex-direction: column;
     align-items: center;

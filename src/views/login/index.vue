@@ -1,5 +1,5 @@
 <script setup>
-import {useLogin} from "@views/login/hooks/useLogin.js";
+import {useLogin} from "@views/login/hooks/useLogin.jsx";
 
 const {loginForm, userLogin, loading, loginRef, loginRules} = useLogin()
 </script>
@@ -42,7 +42,7 @@ const {loginForm, userLogin, loading, loginRef, loginRules} = useLogin()
 .login-container {
     width: 100%;
     height: 100%;
-    background-color: #00cec9;
+    background-color: rgb(22, 21, 39);
     @include displayFlex;
 }
 

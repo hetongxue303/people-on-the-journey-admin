@@ -4,7 +4,7 @@ import logo from '@assets/images/logo.png'
 import {getUserinfo, login, logout, modifyPassword, register} from "@/api/auth.js";
 import {ElNotification} from "element-plus";
 import {setToken, setTokenTime} from "@utils/common.js";
-import {useLogin} from "@views/login/hooks/useLogin.js";
+import {useLogin} from "@views/login/hooks/useLogin.jsx";
 import navbarData from "@views/home/data/data.js";
 import useUser from "@store/modules/user.js";
 import {confirmBox} from "@utils/element.js";
@@ -308,19 +308,25 @@ const saveUserinfo = async (formEl) => {
                 <el-link v-show="!user.getUserId" :underline="false" style="font-size: 12px" type="danger" @click="openDialog('R')">
                     &nbsp;&nbsp;免费注册
                 </el-link>
-                <el-image v-show="user.getUserId" :src="user.getUserinfo['avatar']" style="width: 45px;height: 45px;border-radius: 50%"/>
                 <el-dropdown v-show="user.getUserId" style="margin:0 10px 0 5px">
-                    <span class="el-dropdown-link">
+                    <div style="display: flex;justify-content: center;align-items: center;width: 130px;height: 50px">
+                        <el-image v-show="user.getUserId" :src="user.getUserinfo['avatar']" style="width: 30px;height: 30px;border-radius: 50%"/>
+                        <span style="margin-left: 5px" class="el-dropdown-link">
                         {{ user.getUserinfo['nickname'] }}
                             <el-icon class="el-icon--right" size="10">
                                 <component is="arrow-down"/>
                             </el-icon>
                     </span>
+                    </div>
                     <template #dropdown>
-                        <el-dropdown-menu>
-                            <el-dropdown-item @click="infoDialog=true">个人信息</el-dropdown-item>
-                            <el-dropdown-item @click="upwDialog=true">修改密码</el-dropdown-item>
-                            <el-dropdown-item divided @click="userLogout">退出登录</el-dropdown-item>
+                        <el-dropdown-menu style="padding: 0">
+                            <el-dropdown-item @click="infoDialog=true" icon="icon-park-id-card-h">
+                                个人信息
+                            </el-dropdown-item>
+                            <el-dropdown-item @click="upwDialog=true" icon="icon-park-key">修改密码</el-dropdown-item>
+                            <el-dropdown-item style="border-top: rgb(235, 238, 245) solid 1px" @click="userLogout" icon="icon-park-logout">
+                                退出登录
+                            </el-dropdown-item>
                         </el-dropdown-menu>
                     </template>
                 </el-dropdown>

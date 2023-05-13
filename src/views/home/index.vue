@@ -21,12 +21,18 @@ const images = [index1, index2, index3, index4]
         <about/>
         <list/>
         <food/>
-        <div style="display: flex;justify-content: center;align-items: center;width: 100%;height:900px;background-color: rgb(19, 22, 37)">
-
-        </div>
-
         <div class="footer">
-            footer内容
+            <div class="footer-link">
+                <el-link :underline="false" type="info" disabled class="footer-link">人在旅途</el-link>
+                |
+                <el-link class="footer-link" :underline="false" type="info" href="/admin/login">管理员登录</el-link>
+            </div>
+            <div class="footer-content">
+                <div>联系邮箱：xxx@qq.com</div>
+                <div>QQ:14626463</div>
+                <div>联系地址：xx市xx区xx街道</div>
+                <div>联系电话：203-67865954</div>
+            </div>
         </div>
     </div>
 
@@ -62,10 +68,25 @@ const images = [index1, index2, index3, index4]
 
 /* footer */
 .footer {
+    color: rgb(102, 86, 69);
     width: 100%;
-    height: 200px;
-    margin: 10px 0 0 0;
-    background-color: #409eff;
-    border-radius: 10px 10px 0 0;
+    height: 150px;
+    background-color: rgb(15, 17, 29);
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
+
+.footer-content {
+    margin-top: 20px;
+    display: flex;
+    width: 70%;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.footer-link {
+    font-size: 14px;
 }
 </style>

@@ -1,5 +1,5 @@
 import {reactive, ref} from "vue";
-import {useLogin} from "@views/login/hooks/useLogin.js";
+import {useLogin} from "@views/login/hooks/useLogin.jsx";
 import {login, register} from "@/api/auth.js";
 import {ElNotification} from "element-plus";
 import {setToken, setTokenTime} from "@utils/common.js";

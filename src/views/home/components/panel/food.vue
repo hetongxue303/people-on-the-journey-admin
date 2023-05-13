@@ -38,12 +38,11 @@
 
 <style scoped lang="scss">
 .parent {
-    padding-top: 150px;
     display: flex;
     justify-content: center;
     align-items: center;
     width: 100%;
-    height: 900px;
+    height: 800px;
     background-color: rgb(22, 21, 39);
     flex-direction: column;
 }
@@ -51,7 +50,7 @@
 .title {
     color: white;
     font-size: 26px;
-    padding: 10px 0 30px 0;
+    padding: 0 0 30px 0;
 }
 
 .panel {
@@ -83,7 +82,6 @@
 }
 
 .card-box:hover {
-    width: 388;
-    transition: all ease-in-out 0.3s;
+    transform: scale(1.05);
 }
 </style>

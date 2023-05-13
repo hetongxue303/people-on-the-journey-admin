@@ -3,7 +3,7 @@ import Pagination from '@components/pagination/index.vue'
 import {Reload} from "@icon-park/vue-next";
 import moment from "moment";
 import {ElNotification} from "element-plus";
-import {useUser} from "@views/system/user/hooks/useUser.js";
+import {useUser} from "@views/system/user/hooks/useUser.jsx";
 
 const {
     search,
@@ -17,6 +17,8 @@ const {
     title,
     dialogRef,
     columns,
+    imageUrl,
+    showImage,
     dialogOperate,
     getTableData,
     selectionChange,
@@ -25,7 +27,10 @@ const {
     openDialog,
     handleBatchDelete,
     handleDelete,
-    handleOperate
+    handleOperate,
+    handleUploadSuccess,
+    handleBeforeUpload,
+    openShowImage
 } = useUser()
 </script>
 
@@ -82,7 +87,7 @@ const {
             <el-table-column v-if="columns[1].status" :label="columns[1].label" prop="id"/>
             <el-table-column v-if="columns[2].status" :label="columns[2].label">
                 <template #default="{row}">
-                    <el-image :src="row.userinfo['avatar']" class="table-image"/>
+                    <el-image :src="row.userinfo.avatar" class="table-image" @click="openShowImage(row.userinfo.avatar)"/>
                 </template>
             </el-table-column>
             <el-table-column v-if="columns[3].status" :label="columns[3].label" prop="username"/>
@@ -137,6 +142,26 @@ const {
         width="30%"
     >
         <el-form ref="dialogRef" :model="form" :rules="dialogRules" label-width="70">
+            <el-form-item label="头像" prop="avatar">
+                <el-upload
+                    :before-upload="handleBeforeUpload"
+                    :on-success="handleUploadSuccess"
+                    :show-file-list="false"
+                    action="/api/file/upload/avatar"
+                    class="images-upload"
+                    drag
+                    method="post"
+                    name="file"
+                >
+                    <el-image v-if="form.userinfo.avatar" :src="form.userinfo.avatar" class="images-box" fit="fill" title="点击更换头像"/>
+                    <div v-else class="images-box">
+                        <el-icon :size="50" class="images-upload-icon">
+                            <component is="upload-filled"/>
+                        </el-icon>
+                        <div class="el-upload__text" style="font-size: 10px">将文件拖到此处，或<em>点击上传</em></div>
+                    </div>
+                </el-upload>
+            </el-form-item>
             <el-form-item label="用户名" prop="username">
                 <el-input v-model="form.username" :disabled="dialogOperate==='edit'"/>
             </el-form-item>
@@ -165,6 +190,17 @@ const {
             <el-button type="primary" @click="handleOperate(dialogRef)">确认</el-button>
         </template>
     </el-dialog>
+
+    <el-dialog
+        v-model="showImage"
+        :show-close="false"
+        class="dialog-common"
+        destroy-on-close
+        title="查看图像"
+        width="33%"
+    >
+        <el-image :src="imageUrl" class="table-image-show"/>
+    </el-dialog>
 </template>
 
 <style lang="scss" scoped>
@@ -190,5 +226,41 @@ const {
 
 :deep(.el-row) {
     @apply mb-20px;
+}
+
+// image
+$images-upload-width: 200px;
+$images-upload-height: 200px;
+:deep(.images-upload) {
+    border: 1px dashed var(--el-border-color);
+    border-radius: 50%;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: var(--el-transition-duration-fast);
+    width: $images-upload-width;
+    height: $images-upload-height;
+
+    &:hover {
+        border-color: var(--el-color-primary);
+    }
+}
+
+:deep(.el-upload-dragger) {
+    padding: 0;
+}
+
+.images-upload-icon {
+    color: #8c939d;
+    text-align: center;
+}
+
+.images-box {
+    width: $images-upload-width;
+    height: $images-upload-height;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
 </style>

@@ -3,7 +3,7 @@ import Pagination from '@components/pagination/index.vue'
 import {Reload} from "@icon-park/vue-next";
 import moment from "moment";
 import {ElNotification} from "element-plus";
-import {useFood} from "@views/journey/food/hooks/useFood.js";
+import {useFood} from "@views/journey/food/hooks/useFood.jsx";
 
 const {
     search,

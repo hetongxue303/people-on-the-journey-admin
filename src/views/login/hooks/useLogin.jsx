@@ -1,9 +1,10 @@
 import md5 from 'js-md5'
 import {reactive, ref} from "vue";
-import {adminLogin, login} from "@/api/auth.js";
+import {adminLogin} from "@/api/auth.js";
 import {useRouter} from "vue-router";
 import {ElNotification} from "element-plus";
 import {setToken, setTokenTime} from "@utils/common.js";
+import useUser from "@store/modules/user.js";
 
 export function useLogin() {
     const router = useRouter()
@@ -37,6 +38,8 @@ export function useLogin() {
                             ElNotification.success('登陆成功')
                             setToken(data.data.value, data.data.timeout)
                             setTokenTime(data.data.timeout)
+                            useUser()
+                                .setLoginInfo(data.data)
                             router.push(redirect.value || '/admin/index')
                             return
                         }

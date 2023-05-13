@@ -3,7 +3,7 @@ import Pagination from '@components/pagination/index.vue'
 import {Reload} from "@icon-park/vue-next";
 import moment from "moment";
 import {ElNotification} from "element-plus";
-import {useTravelAgency} from "@views/journey/travel-agency/hooks/useTravelAgency.js";
+import {useTravelAgency} from "@views/journey/travel-agency/hooks/useTravelAgency.jsx";
 // const dataList = ref([])
 // const value = ref([])
 // onMounted(() => {

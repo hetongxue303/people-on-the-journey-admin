@@ -3,7 +3,7 @@ import Pagination from '@components/pagination/index.vue'
 import {Reload} from "@icon-park/vue-next";
 import moment from "moment";
 import {ElNotification} from "element-plus";
-import {useRole} from "@views/system/role/hooks/useRole.js";
+import {useRole} from "@views/system/role/hooks/useRole.jsx";
 
 const {
     search,
