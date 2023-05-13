@@ -35,7 +35,7 @@ export const routes = [
             {
                 name: 'admin-index',
                 path: '/admin/index',
-                meta: {title: '后台首页'},
+                meta: {title: '首页'},
                 component: () => import('@views/index/index.vue')
             },
             {
@@ -110,7 +110,7 @@ export const routes = [
             {
                 name: 'index',
                 path: '/index',
-                meta: {title: '首页'},
+                meta: {title: '人在旅途'},
                 component: () => import('@views/home/index.vue')
             },
             {

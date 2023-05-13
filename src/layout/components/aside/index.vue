@@ -2,6 +2,14 @@
 import data from "@layout/data.js";
 import MenuItem from "@layout/components/aside/components/menuItem.vue";
 import variables from '@assets/styles/variables.module.scss'
+import {onMounted, ref, watch} from "vue";
+import {useRoute} from "vue-router";
+
+const route = useRoute()
+const activePath = ref('/admin/index')
+const changeDefaultActive = () => activePath.value = route.path
+watch(() => route.path, () => changeDefaultActive(), {deep: true, immediate: true})
+onMounted(() => changeDefaultActive())
 </script>
 
 <template>
@@ -10,7 +18,7 @@ import variables from '@assets/styles/variables.module.scss'
                  :background-color="variables['layout-aside-background-color']"
                  :text-color="variables['layout-aside-text-color']"
                  :unique-opened="true"
-                 default-active="/index"
+                 :default-active="activePath"
                  router>
             <menuItem :menu-data="data"/>
         </el-menu>

@@ -8,6 +8,7 @@ import {clone, cloneDeep} from "lodash-es";
 import {getUserinfo, logout, modifyPassword} from "@/api/auth.js";
 import {useLogin} from "@views/login/hooks/useLogin.jsx";
 import {confirmBox} from "@utils/element.js";
+import Breadcrumb from '@layout/components/breadcrumb/index.vue'
 
 const drawer = ref(false)
 const user = useUser()
@@ -117,11 +118,26 @@ const handleBeforeUpload = (file) => {
         return false
     }
 }
+
+// 设置全屏
+const toggleFullScreen = () => {
+    if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen()
+    } else {
+        if (document.exitFullscreen) {
+            document.exitFullscreen()
+        }
+    }
+}
 </script>
 
 <template>
-    <div style="display: flex;justify-content: space-between;align-items: center;width: 100%">
+    <div style="display: flex;justify-content: space-between;align-items: center;width: 100%;padding: 0 10px 0 10px">
+        <Breadcrumb/>
         <div style="display: flex;justify-content: center;align-items: center">
+            <div class="fullscreen" style="margin-top: 5px" @click="toggleFullScreen">
+                <component is="icon-park-full-screen" :size="16"/>
+            </div>
             <el-dropdown trigger="click">
                 <div class="language">
                     <component is="icon-park-translate" :size="18"/>
@@ -133,8 +149,6 @@ const handleBeforeUpload = (file) => {
                     </el-dropdown-menu>
                 </template>
             </el-dropdown>
-        </div>
-        <div style="display: flex;justify-content: center;align-items: center">
             <el-dropdown trigger="click">
                 <div class="userinfo">
                     <el-image :src="user.getUserinfo.avatar" style="width: 30px;height: 30px;border-radius: 50%"/>
@@ -152,7 +166,7 @@ const handleBeforeUpload = (file) => {
                     </el-dropdown-menu>
                 </template>
             </el-dropdown>
-            <div class="header-setting" style="margin-top: 5px" @click="drawer=true">
+            <div class="setting" style="margin-top: 5px" @click="drawer=true">
                 <component is="icon-park-setting" :size="16"/>
             </div>
         </div>
@@ -250,8 +264,8 @@ const handleBeforeUpload = (file) => {
 </template>
 
 <style lang="scss" scoped>
-/* settings */
-.header-setting, .language {
+/* icon */
+.setting, .language, .fullscreen {
     width: 50px;
     height: 50px;
     display: flex;
@@ -268,7 +282,7 @@ const handleBeforeUpload = (file) => {
     height: 50px;
 }
 
-.header-setting:hover, .userinfo:hover, .language:hover {
+.setting:hover, .userinfo:hover, .language:hover, .fullscreen:hover {
     background-color: rgb(246, 246, 246);
 }
 
