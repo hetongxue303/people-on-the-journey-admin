@@ -47,7 +47,7 @@ export const routes = [
             {
                 name: 'admin-travel-agency',
                 path: '/admin/journey/travel-agency',
-                meta: {title: '旅游社'},
+                meta: {title: '旅社管理'},
                 component: () => import('@views/journey/travel-agency/index.vue')
             },
             {
@@ -55,6 +55,12 @@ export const routes = [
                 path: '/admin/journey/scenic-spots',
                 meta: {title: '景区管理'},
                 component: () => import('@views/journey/scenic-spots/index.vue')
+            },
+            {
+                name: 'admin-share',
+                path: '/admin/journey/share',
+                meta: {title: '分享管理'},
+                component: () => import('@views/journey/share/index.vue')
             },
             {
                 name: 'admin-user',

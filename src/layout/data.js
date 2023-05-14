@@ -10,7 +10,12 @@ const data = [
         path: '/admin/journey',
         children: [
             {
-                title: '旅游社',
+                title: '分享管理',
+                icon: 'icon-park-trunk',
+                path: '/admin/journey/share'
+            },
+            {
+                title: '旅社管理',
                 icon: 'icon-park-trunk',
                 path: '/admin/journey/travel-agency'
             },

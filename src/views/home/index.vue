@@ -1,11 +1,10 @@
 <script setup>
+import indexBg from '@assets/images/index-bg.jpg'
 import index1 from '@assets/images/index1.jpg'
 import index2 from '@assets/images/index2.png'
 import index3 from '@assets/images/index3.png'
 import index4 from '@assets/images/index4.png'
-import About from "@views/home/components/panel/about.vue";
-import List from "@views/home/components/panel/list.vue";
-import Food from "@views/home/components/panel/food.vue";
+import Share from "@views/home/components/panel/share.vue";
 
 const images = [index1, index2, index3, index4]
 </script>
@@ -16,14 +15,15 @@ const images = [index1, index2, index3, index4]
     <!--            <el-image :src="item" fit="contain"/>-->
     <!--        </el-carousel-item>-->
     <!--    </el-carousel>-->
-    <el-image :src="index2"/>
+    <el-image :src="indexBg" fit="fill"/>
     <div class="content">
-        <about/>
-        <list/>
-        <food/>
+        <Share/>
+        <!--        <about/>-->
+        <!--        <list/>-->
+        <!--        <food/>-->
         <div class="footer">
             <div class="footer-link">
-                <el-link :underline="false" type="info" disabled class="footer-link">人在旅途</el-link>
+                <el-link :underline="false" type="default" disabled class="footer-link">人在旅途</el-link>
                 |
                 <el-link class="footer-link" :underline="false" type="info" href="/admin/login">管理员登录</el-link>
             </div>
@@ -71,11 +71,12 @@ const images = [index1, index2, index3, index4]
     color: rgb(102, 86, 69);
     width: 100%;
     height: 150px;
-    background-color: rgb(15, 17, 29);
+    background-color: aliceblue;
     display: flex;
     justify-content: center;
     flex-direction: column;
     align-items: center;
+    border-top: 1px solid #97a8be;
 }
 
 .footer-content {
@@ -84,9 +85,10 @@ const images = [index1, index2, index3, index4]
     width: 70%;
     justify-content: space-around;
     align-items: center;
+    font-size: 13px;
 }
 
 .footer-link {
-    font-size: 14px;
+    font-size: 12px;
 }
 </style>

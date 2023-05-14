@@ -3,13 +3,16 @@
 </script>
 
 <template>
-    <div class="container">123</div>
+    <div class="box">
+        信息预定
+    </div>
 </template>
 
 <style scoped lang="scss">
-.container {
+.box {
     width: 100%;
     height: 100%;
-    background-color: #409eff;
+    top: 50px;
+    position: relative;
 }
 </style>

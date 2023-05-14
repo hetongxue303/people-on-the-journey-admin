@@ -42,7 +42,8 @@ const {loginForm, userLogin, loading, loginRef, loginRules} = useLogin()
 .login-container {
     width: 100%;
     height: 100%;
-    background-color: rgb(22, 21, 39);
+    background: linear-gradient(180deg, #57C601 0%, #320049 100%), linear-gradient(121.28deg, #007762 0%, #5200FF 100%), linear-gradient(341.1deg, #FF0000 7.52%, #1700A4 77.98%), radial-gradient(49.82% 80.51% at 49.82% 50%, #820097 0%, #FF3D00 100%), radial-gradient(50% 72.12% at 50% 50%, #EB00FF 0%, #0B0037 100%);
+    background-blend-mode: color-dodge, overlay, difference, difference, normal;
     @include displayFlex;
 }
 
