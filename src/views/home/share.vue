@@ -13,8 +13,25 @@ import {confirmBox} from "@utils/element.js";
 /* 上传 */
 const maxSize = ref(5)
 const types = ref(['image/jpeg', 'image/png'])
-const handleUploadSuccess = (response) => (form.value.image = clone(response.data))
+const handleUploadSuccess = (response) => (infoFrom.value.avatar = clone(response.data))
+const handleFormUploadSuccess = (response) => (form.value.image = clone(response.data))
 
+const handleFormBeforeUpload = (file) => {
+    const {value} = maxSize
+    const {size, type} = file
+    if (!user.getUserId) {
+        ElNotification.warning('请先登录')
+        return false
+    }
+    if (size / 1000 / 1024 > value) {
+        ElNotification.warning(`图片最大为${value}MB`);
+        return false;
+    }
+    if (types.value.indexOf(type) === -1) {
+        ElNotification.warning('图片类型错误')
+        return false
+    }
+}
 const handleBeforeUpload = (file) => {
     const {value} = maxSize
     const {size, type} = file
@@ -196,6 +213,7 @@ const userLogout = () => {
             })
     }, undefined, undefined)
 }
+
 </script>
 
 <template>
@@ -315,8 +333,8 @@ const userLogout = () => {
         </div>
         <div class="share-image">
             <el-upload
-                :before-upload="handleBeforeUpload"
-                :on-success="handleUploadSuccess"
+                :before-upload="handleFormBeforeUpload"
+                :on-success="handleFormUploadSuccess"
                 :show-file-list="false"
                 action="/api/file/upload/share"
                 class="images-upload"
@@ -367,9 +385,28 @@ const userLogout = () => {
             <button v-if="user.getUserId" class="btn-ok" @click="handleSave">发布心情</button>
         </div>
     </div>
+    <div class="share-list">
+        <div class="item-content">
+
+        </div>
+    </div>
 </template>
 
 <style scoped lang="scss">
+.share-list {
+    width: 100%;
+    height: 400px;
+    display: flex;
+    justify-content: center;
+    background-color: aliceblue;
+}
+
+.item-content {
+    width: 80%;
+    height: 100px;
+    background-color: #0B0037;
+}
+
 :deep(.el-link) {
     margin-bottom: 5px;
     font-size: 13px;

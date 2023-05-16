@@ -5,25 +5,15 @@ const navbarData = [
         path: '/index'
     },
     {
-        title: '信息预定',
+        title: '我的订单',
         icon: 'icon-park-trunk',
-        path: '/travel-agency'
+        path: '/order/me'
     },
-    // {
-    //     title: '旅社',
-    //     icon: 'icon-park-trunk',
-    //     path: '/travel-agency'
-    // },
-    // {
-    //     title: '美食',
-    //     icon: 'icon-park-bowl',
-    //     path: '/food'
-    // },
-    // {
-    //     title: '景区',
-    //     icon: 'icon-park-landscape',
-    //     path: '/scenic-spots'
-    // },
+    {
+        title: '旅途预约',
+        icon: 'icon-park-trunk',
+        path: '/order'
+    },
     {
         title: '关于我们',
         icon: 'icon-park-landscape',

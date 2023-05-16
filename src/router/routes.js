@@ -93,7 +93,7 @@ export const routes = [
         name: 'home',
         path: '/',
         redirect: '/index',
-        component: () => import('@views/home/components/layout.vue'),
+        component: () => import('@views/home/layout.vue'),
         children: [
             {
                 name: '401',
@@ -120,22 +120,16 @@ export const routes = [
                 component: () => import('@views/home/index.vue')
             },
             {
-                name: 'travel-agency',
-                path: '/travel-agency',
-                meta: {title: '旅行社'},
-                component: () => import('@views/home/travelAgency.vue')
+                name: 'order',
+                path: '/order',
+                meta: {title: '旅途预约'},
+                component: () => import('@views/home/order.vue')
             },
             {
-                name: 'scenic-spots',
-                path: '/scenic-spots',
+                name: 'myOrder',
+                path: '/order/me',
                 meta: {title: '景区'},
-                component: () => import('@views/home/scenicSpots.vue')
-            },
-            {
-                name: 'food',
-                path: '/food',
-                meta: {title: '美食'},
-                component: () => import('@views/home/food.vue')
+                component: () => import('@views/home/my-order.vue')
             },
             {
                 name: 'about',

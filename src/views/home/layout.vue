@@ -1,19 +1,24 @@
 <script setup>
-import {ref} from 'vue'
+import {ref, watch} from 'vue'
 import logo from '@assets/images/logo.png'
 import navbarData from "@views/home/data/data.js";
+import {useRoute} from "vue-router";
 
-const activeIndex = ref('/index')
+const active = ref('/index')
 const changePath = (path) => {
-    activeIndex.value = path
-    window.location.href = path
+    active.value = path
+    window.location.href = path;
 }
+let route = useRoute()
+watch(() => route.path, (path) => {
+    console.log(path)
+}, {deep: true})
 </script>
 
 <template>
     <div class="home-content">
         <el-menu
-            :default-active="activeIndex"
+            :default-active="active"
             :ellipsis="false"
             class="navbar"
             mode="horizontal"
@@ -34,7 +39,7 @@ const changePath = (path) => {
 /* home */
 .home-content {
     width: 100%;
-    height: 1000px;
+    background-color: #0B0037;
 }
 
 .home-content-no {
