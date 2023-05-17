@@ -46,11 +46,11 @@ const data = [
                 icon: 'icon-park-permissions',
                 path: '/admin/system/role'
             },
-            {
-                title: '菜单管理',
-                icon: 'icon-park-application-menu',
-                path: '/admin/system/menu'
-            },
+            // {
+            //     title: '菜单管理',
+            //     icon: 'icon-park-application-menu',
+            //     path: '/admin/system/menu'
+            // },
         ]
     },
     {

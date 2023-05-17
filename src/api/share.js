@@ -4,6 +4,8 @@ export const getShareLisAllUrl = () => axios({method: 'GET', url: `${base_url}/s
 
 export const getShareListUrl = (params) => axios({method: 'GET', url: `${base_url}/share/list`, params})
 
+export const getShareHomeListUrl = (params) => axios({method: 'GET', url: `${base_url}/share/list/home`, params})
+
 export const addShareUrl = (data) => axios({method: 'POST', url: `${base_url}/share/add`, data})
 
 export const updateShareUrl = (data) => axios({method: 'PUT', url: `${base_url}/share/update`, data})

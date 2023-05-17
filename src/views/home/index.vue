@@ -1,9 +1,10 @@
 <script setup>
-// import indexBg from '@assets/images/index-bg.jpg'
+import indexBg from '@assets/images/index-bg.jpg'
 import Share from "@views/home/share.vue";
 </script>
 
 <template>
+    <el-image :src="indexBg" fit="cover" style="width: 100%;height: 600px"/>
     <div class="content">
         <Share/>
         <div class="footer">
@@ -45,7 +46,7 @@ import Share from "@views/home/share.vue";
 .content {
     margin-top: -6px;
     width: 100%;
-    height: 2500px;
+    height: auto;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -55,7 +56,7 @@ import Share from "@views/home/share.vue";
 .footer {
     color: rgb(102, 86, 69);
     width: 100%;
-    height: 150px;
+    height: 80px;
     background-color: aliceblue;
     display: flex;
     justify-content: center;

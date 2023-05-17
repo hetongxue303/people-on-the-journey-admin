@@ -3,6 +3,7 @@ import {ref, watch} from 'vue'
 import logo from '@assets/images/logo.png'
 import navbarData from "@views/home/data/data.js";
 import {useRoute} from "vue-router";
+import useUser from "@store/modules/user.js";
 
 const active = ref('/index')
 const changePath = (path) => {
@@ -28,7 +29,9 @@ watch(() => route.path, (path) => {
                 <el-image :src="logo" class="home-logo" fit="contain"/>
             </div>
             <div class="flex-grow"/>
-            <el-menu-item v-for="item in navbarData" :key="item" :index="item.path">{{ item.title }}</el-menu-item>
+            <el-menu-item v-show="!(item.isLogin)" v-for="item in navbarData" :key="item" :index="item.path">
+                {{ item.title }}
+            </el-menu-item>
         </el-menu>
         <router-view/>
     </div>
@@ -39,7 +42,8 @@ watch(() => route.path, (path) => {
 /* home */
 .home-content {
     width: 100%;
-    background-color: #0B0037;
+    height: auto;
+    background-color: aliceblue;
 }
 
 .home-content-no {
@@ -52,12 +56,12 @@ watch(() => route.path, (path) => {
     //position: fixed;
     //top: 0;
     //right: 0;
-    z-index: 999;
     height: 50px;
     width: 100%;
     padding: 0 80px 0 80px;
     position: fixed;
     top: 0;
+    z-index: 99;
 }
 
 .flex-grow {

@@ -3,6 +3,7 @@ import {axios, base_url} from "@utils/request.js";
 export const getOrderLisAllUrl = () => axios({method: 'GET', url: `${base_url}/order/all`})
 
 export const getOrderListUrl = (params) => axios({method: 'GET', url: `${base_url}/order/list`, params})
+export const getOrderListByIdUrl = (id, params) => axios({method: 'GET', url: `${base_url}/order/list/${id}`, params})
 
 export const addOrderUrl = (data) => axios({method: 'POST', url: `${base_url}/order/add`, data})
 

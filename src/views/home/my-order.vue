@@ -1,174 +1,149 @@
 <script setup>
-import {onMounted, ref} from "vue";
-import {getScenicSpotsListUrl} from "@/api/scenicSpots.js";
-import {cloneDeep} from "lodash-es";
-import {getFoodListUrl} from "@/api/food.js";
-import {getTravelAgencyListUrl} from "@/api/travelAgency.js";
-import {addOrderUrl} from "@/api/order.js";
-import {ElNotification} from "element-plus";
+import useUser from "@store/modules/user.js";
+import {onMounted, reactive, ref, watch} from "vue";
+import {getOrderListByIdUrl} from "@/api/order.js";
+import Pagination from "@components/pagination/index.vue";
+import {clone, cloneDeep} from "lodash-es";
+import moment from "moment";
 
-let active = ref(1)
-
-const submit = () => {
-    addOrderUrl({
-        scenicSpots: scenicSpotsSelect.value,
-        food: foodSelect.value,
-        travelAgency: travelAgencySelect.value,
-        remark: ''
-    })
+let user = useUser()
+let search = reactive({current: 1, size: 10})
+let list = ref([])
+let total = ref(0)
+const initData = () => {
+    getOrderListByIdUrl(user.getUserId, search)
         .then(({data}) => {
             if (data.code === 200) {
-                ElNotification.success('预约成功')
-                return
+                list.value = cloneDeep(data.data["records"])
+                total.value = clone(data.data.total)
             }
-            ElNotification.error('预约失败，请重试！')
         })
 }
-let scenicSpotsList = ref([])
-let scenicSpotsSelect = ref({})
-let FoodList = ref([])
-let foodSelect = ref({})
-let travelAgencyList = ref([])
-let travelAgencySelect = ref({})
-let count = ref(1)
-const initData = () => {
-    getScenicSpotsListUrl({current: count.value, size: 2})
-        .then(({data}) => scenicSpotsList.value = data.code === 200 ? data.data["records"] : [])
-    getFoodListUrl({current: count.value, size: 2})
-        .then(({data}) => FoodList.value = data.code === 200 ? data.data["records"] : [])
-    getTravelAgencyListUrl({current: count.value, size: 2})
-        .then(({data}) => travelAgencyList.value = data.code === 200 ? data.data["records"] : [])
-}
-const clickContent = (type, item) => {
-    if (type === 's') scenicSpotsSelect.value = cloneDeep(item)
-    if (type === 'f') foodSelect.value = cloneDeep(item)
-    if (type === 't') travelAgencySelect.value = cloneDeep(item)
-}
-let bthStatus = ref(false)
-const next = () => {
-    active.value++;
-}
+const changeCurrent = (current) => search.current = current
+const changeSize = (size) => search.size = size
+watch(
+    () => search,
+    () => initData(),
+    {deep: true}
+)
+const rateValue = reactive({num: 0, orderId: 0})
 onMounted(() => initData())
+// const changeRate = (item) =>
+//     rateValue.num = item.rate
+//
+// const submit = (item) => {
+//     rateValue.orderId = item.id
+//
+// }
 </script>
 
 <template>
-    <div class="box">
-        <el-steps :active="active" finish-status="success" simple>
-            <el-step icon="icon-park-landscape" title="选择景区"/>
-            <el-step icon="icon-park-bowl" title="选择美食"/>
-            <el-step icon="icon-park-trunk" title="选择旅社"/>
-        </el-steps>
-        <div class="content-box">
-            <div class="content-main">
-                <!-- 景点 -->
-                <div v-for="item in scenicSpotsList" v-if="active===1" :class="{'content':true}" @click="clickContent('s',item)">
-                    <el-image :src="item.image" class="content-image" fit="cover"/>
-                    <div class="content-name">{{ item.name }}</div>
-                    <div class="content-intro">介绍：{{ item.intro }}</div>
-                    <el-button :disabled="scenicSpotsSelect.id===item.id" :type=" scenicSpotsSelect.id === item.id ?'info':'primary'" class="content-button" @click="clickContent('s',item)">
-                        {{ scenicSpotsSelect.id === item.id ? '已选择' : '选择' }}
-                    </el-button>
+    <div class="my-order-box">
+        <div class="my-content-box">
+            <div v-for="item in list" class="my-content-item">
+                <div style="display: flex;flex-direction: column;justify-content: center">
+                    <el-avatar :src="item.user.avatar" shape="square" style="width: 50px;height: 50px"/>
+                    <div class="mt-10px" style="color: #1e272e;font-size: 12px">{{ item.user.nickname }}</div>
                 </div>
-                <!-- 美食 -->
-                <div v-for="item in FoodList" v-else-if="active===2" :class="{'content':true}" @click="clickContent('f',item)">
-                    <el-image :src="item.image" class="content-image" fit="cover"/>
-                    <div class="content-name">{{ item.name }}</div>
-                    <div class="content-intro">介绍：{{ item.intro }}</div>
-                    <el-button :disabled="foodSelect.id===item.id" :type=" foodSelect.id === item.id ?'info':'primary'" class="content-button" @click="clickContent('f',item)">
-                        {{ foodSelect.id === item.id ? '已选择' : '选择' }}
-                    </el-button>
-                </div>
-                <!-- 旅社 -->
-                <div v-for="item in travelAgencyList" v-else :class="{'content':true}" @click="clickContent('t',item)">
-                    <el-image :src="item.image" class="content-image" fit="cover"/>
-                    <div class="content-name">{{ item.name }}</div>
-                    <div class="content-intro">介绍：{{ item.intro }}</div>
-                    <el-button :disabled="travelAgencySelect.id===item.id" :type=" travelAgencySelect.id === item.id ?'info':'primary'" class="content-button" @click="clickContent('t',item)">
-                        {{ travelAgencySelect.id === item.id ? '已选择' : '选择' }}
-                    </el-button>
+                <div style="display: flex;justify-content: center;margin-left: 50px">
+                    <div style="display: flex">
+                        <div style="display: flex;flex-direction: column;justify-content: center;align-items: center;margin-right: 40px">
+                            <div style="background-color: #575fcf;border-radius: 10px;width: 80px;display: flex;justify-content: center;color: white;margin-bottom: 10px;height: 40px;align-items: center;text-indent: each-line;">
+                                景区
+                            </div>
+                            <el-image :src=" item.scenicSpots.image" style="width: 100px;height: 100px;border-radius: 10px;box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);"/>
+                            <span style="color: #485460;margin-top: 5px">{{ item.scenicSpots.name }}</span>
+                        </div>
+                        <div style="display: flex;flex-direction: column;justify-content: center;align-items: center;margin-right: 40px">
+                            <div style="background-color: #0fbcf9;border-radius: 10px;width: 80px;display: flex;justify-content: center;color: white;margin-bottom: 10px;height: 40px;align-items: center;text-indent: each-line;">
+                                美食
+                            </div>
+                            <el-image :src=" item.food.image" style="width: 100px;height: 100px;border-radius: 10px;box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);"/>
+                            <span style="color: #485460;margin-top: 5px">{{ item.food.name }}</span>
+                        </div>
+                        <div style="display: flex;flex-direction: column;justify-content: center;align-items: center">
+                            <div style="background-color: #00d8d6;border-radius: 10px;width: 80px;display: flex;justify-content: center;color: white;margin-bottom: 10px;height: 40px;align-items: center;text-indent: each-line;">
+                                旅社
+                            </div>
+                            <el-image :src=" item.travelAgency.image" style="width: 100px;height: 100px;border-radius: 10px;box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);"/>
+                            <span style="color: #485460;margin-top: 5px">{{ item.travelAgency.name }}</span>
+                        </div>
+                    </div>
+                    <div style="margin-left: 50px">
+                        <div style="background-color: #ffa801;border-radius: 10px;width: 80px;display: flex;justify-content: center;color: white;margin-bottom: 10px;height: 40px;align-items: center;text-indent: each-line;margin-top: 1px;margin-left: 75px">
+                            订单详情
+                        </div>
+                        <div style="display: flex;flex-direction: column;justify-content: center;width: 100%;height:100px;color: #808e9b;border: 1px solid rgba(0,0,0,0.2);border-radius: 10px;padding: 0 15px;box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);">
+                            <div>订单号码：{{ item['orderNum'] }}</div>
+                            <div>您的邮箱：{{ item.user.email }}</div>
+                            <div>您的备注：{{ item.remark ? item.remark : '暂无' }}</div>
+                            <div>
+                                创建时间： {{ moment(item['createTime'])
+                                .format('YYYY-MM-DD HH:mm:ss') }}
+                            </div>
+                        </div>
+                    </div>
+<!--                    <div style="margin-left: 50px">-->
+<!--                        <div style="background-color: #9980FA;border-radius: 10px;width: 80px;display: flex;justify-content: center;color: white;margin-bottom: 10px;height: 40px;align-items: center;text-indent: each-line;margin-top: 1px;margin-left: 35px;">-->
+<!--                            用户评价-->
+<!--                        </div>-->
+<!--                        <div style="display: flex;flex-direction: column;align-items: center;margin-top: 10px;border: 1px solid rgba(0,0,0,0.2);border-radius: 10px;padding: 0 15px;box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);height: 100px;width: 145px">-->
+<!--                            <el-rate @change="changeRate(item)" v-model="item.rate" style="margin-top: 10px"/>-->
+<!--                            <el-button type="success" style="margin-top: 10px" @click="submit(item)">提交</el-button>-->
+<!--                        </div>-->
+<!--                    </div>-->
                 </div>
             </div>
-            <div class="content-bth">
-                <el-button v-show="active>1" type="warning" @click="active--">上一步</el-button>
-                <el-button v-show="active<3" type="primary" @click="next" :disabled="bthStatus">
-                    下一步
-                </el-button>
-                <el-button v-show="active===3" type="success" @click="submit">完成</el-button>
-            </div>
+            <Pagination :current="search.current"
+                        :size="search.size"
+                        :total="total"
+                        class="pagination"
+                        @change-current="changeCurrent"
+                        @change-size="changeSize"/>
         </div>
     </div>
 </template>
 
 <style lang="scss" scoped>
-.box {
+.my-order-box {
     width: 100%;
     height: 100%;
     position: relative;
     top: 50px;
     background-color: aliceblue;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 
-    .content-box {
-        width: 100%;
-        height: 100%;
+.my-content-box {
+    width: 100%;
+    min-height: 676px;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+    //justify-content: center;
+}
 
-        .content-main {
-            width: 100%;
-            height: 660px;
-            display: flex;
-            padding: 20px 150px 0 150px;
+.my-content-item {
+    display: flex;
+    padding: 10px 30px;
+    width: 80%;
+    height: 200px;
+    margin-bottom: 20px;
+    background-color: #ddeeff;
+    border-radius: 15px;
+    box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
 
-            .content {
-                width: 200px;
-                height: 320px;
-                border-radius: 10px;
-                margin: 0 30px 30px 0;
-                cursor: pointer;
-                display: flex;
-                flex-direction: column;
-                background-color: white;
+    &:last-of-type {
+        margin-bottom: 0;
+    }
 
-                &:hover {
-                    background-color: rgba(206, 214, 220, 0.5);
-                    transition: all 0.5s ease-in-out;
-                }
-
-
-                &-image {
-                    width: 200px;
-                    height: 220px;
-                    border-radius: 10px 10px 0 0;
-
-                }
-
-                &-name {
-                    padding: 5px 10px 2.5px 10px;
-                    font-size: 14px;
-
-                }
-
-                &-intro {
-                    padding: 2.5px 10px 2.5px 10px;
-                    font-size: 12px;
-                    overflow: hidden;
-                    height: 36px;
-                    text-overflow: ellipsis;
-                }
-
-                &-button {
-                    width: 90%;
-                    margin: 5px auto 5px auto;
-                }
-            }
-        }
-
-        .content-bth {
-            width: 100%;
-            height: 50px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: aliceblue;
-        }
+    &:hover {
+        transition: 0.3s ease-in-out;
+        transform: scale(1.02);
     }
 }
 </style>

@@ -1,14 +1,16 @@
 <script setup>
-import {reactive, ref, watch} from "vue";
+import {onMounted, reactive, ref, watch} from "vue";
 import {clone, cloneDeep} from "lodash-es";
 import {ElNotification} from "element-plus";
-import {addShareUrl} from "@/api/share.js";
+import {addShareUrl, getShareHomeListUrl} from "@/api/share.js";
 import useUser from "@store/modules/user.js";
 import {updateUserinfoUrl} from "@/api/userinfo.js";
 import {getUserinfo, login, logout, modifyPassword, register} from "@/api/auth.js";
 import {useLogin} from "@views/login/hooks/useLogin.jsx";
 import {setToken, setTokenTime} from "@utils/common.js";
 import {confirmBox} from "@utils/element.js";
+import Pagination from '@components/pagination/index.vue'
+import moment from "moment";
 
 /* 上传 */
 const maxSize = ref(5)
@@ -64,6 +66,7 @@ const handleSave = () => {
         .then(({data}) => {
             if (data.code === 200) {
                 form.value = {}
+                initHome()
                 ElNotification.success('发布成功')
                 return
             }
@@ -213,7 +216,26 @@ const userLogout = () => {
             })
     }, undefined, undefined)
 }
-
+let homeItems = ref([])
+let homeTotal = ref(0)
+let search = reactive({current: 1, size: 10})
+const initHome = () => {
+    getShareHomeListUrl(search)
+        .then(({data}) => {
+            if (data.code === 200) {
+                homeItems.value = cloneDeep(data.data["records"])
+                homeTotal.value = clone(data.data.total)
+            }
+        })
+}
+const changeCurrent = (current) => search.current = current
+const changeSize = (size) => search.size = size
+watch(
+    () => search,
+    () => initHome(),
+    {deep: true}
+)
+onMounted(() => initHome())
 </script>
 
 <template>
@@ -355,7 +377,7 @@ const userLogout = () => {
             <!-- 已登陆 -->
             <div v-if="user.getUserId" class="userinfo">
                 <div class="userinfo-box">
-                    <el-avatar class="avatar" :src="user.getUserinfo.avatar"/>
+                    <el-avatar shape="square" class="avatar" :src="user.getUserinfo.avatar"/>
                 </div>
                 <div class="userinfo-box">
                     <el-link type="info" class="username" :underline="false">
@@ -363,20 +385,34 @@ const userLogout = () => {
                     </el-link>
                 </div>
                 <div class="item-box">
-                    <el-link type="success" icon="icon-park-id-card-h" :underline="false" @click="infoDialog=true">
-                        个人信息
-                    </el-link>
-                    <el-link type="success" icon="icon-park-key" :underline="false" @click="upwDialog=true">
-                        修改密码
-                    </el-link>
-                    <el-link type="success" icon="icon-park-logout" :underline="false" @click="userLogout">
-                        退出登录
-                    </el-link>
+                    <el-dropdown trigger="click">
+                        <el-button type="primary" style="padding: 2px 26px;margin-bottom: 10px">
+                            用户信息
+                            <el-icon style="margin-left: 5px">
+                                <component is="arrow-down"/>
+                            </el-icon>
+                        </el-button>
+                        <template #dropdown>
+                            <el-dropdown-menu style="padding: 0">
+                                <el-dropdown-item icon="icon-park-id-card-h" @click="infoDialog=true">
+                                    个人信息
+                                </el-dropdown-item>
+                                <el-dropdown-item icon="icon-park-key" @click="upwDialog=true">
+                                    修改密码
+                                </el-dropdown-item>
+                                <el-dropdown-item icon="icon-park-logout" @click="userLogout">
+                                    退出登录
+                                </el-dropdown-item>
+                            </el-dropdown-menu>
+                        </template>
+                    </el-dropdown>
                 </div>
             </div>
             <!-- 未登陆 -->
             <div v-else class="userinfo no-userinfo">
-                <el-avatar shape="square" class="no-image mb-20px"/>
+                <el-avatar shape="square" class="no-image mb-20px">
+                    <component is="icon-park-user" :size="50"/>
+                </el-avatar>
                 <button class="btn-ok mb-20px" @click="openDialog('L')">
                     用户登录
                 </button>
@@ -386,25 +422,101 @@ const userLogout = () => {
         </div>
     </div>
     <div class="share-list">
-        <div class="item-content">
-
+        <div v-for="item in homeItems" class="item-content">
+            <div style="display: flex;width: 100%;height: 95%">
+                <div style="width: 8%">
+                    <el-avatar shape="square" :src="item.userinfo.avatar" class="item-avatar"/>
+                    <div class="nickname">{{ item.userinfo.nickname }}</div>
+                </div>
+                <div class="item-content-box">
+                    <div class="item-inner-content">{{ item.content }}</div>
+                    <div class="item-image-box">
+                        <el-image :src="item.image" class="item-image"/>
+                    </div>
+                </div>
+            </div>
+            <div class="create-time">
+                发布时间： {{ moment(item['createTime'])
+                .format('YYYY-MM-DD HH:mm:ss') }}
+            </div>
         </div>
     </div>
+    <Pagination :total="homeTotal"
+                :current="search.current"
+                :size="search.size"
+                class="pagination"
+                @change-current="changeCurrent"
+                @change-size="changeSize"/>
 </template>
 
 <style scoped lang="scss">
+.item-avatar {
+    width: 35px;
+    height: 35px;
+}
+
+.nickname {
+    font-size: 13px;
+    color: #0d2a42;
+    font-weight: 500;
+}
+
+.item-content-box {
+    padding: 30px 30px 0 30px;
+    color: #304156;
+    font-size: 12px;
+    width: 100%;
+}
+
+.item-inner-content {
+    margin-bottom: 10px
+}
+
+.item-image-box {
+    width: 100%;
+    height: 100px;
+    margin-top: 10px;
+}
+
+.item-image {
+    width: 120px;
+    height: 120px;
+    border-radius: 10px
+}
+
+.create-time {
+    color: #6d7073;
+    font-size: 12px;
+    display: flex;
+    justify-content: right;
+    width: 100%;
+}
+
 .share-list {
     width: 100%;
-    height: 400px;
+    height: auto;
     display: flex;
     justify-content: center;
+    align-items: center;
+    flex-direction: column;
     background-color: aliceblue;
 }
 
 .item-content {
-    width: 80%;
-    height: 100px;
-    background-color: #0B0037;
+    width: 66%;
+    border-radius: 10px;
+    height: 220px;
+    background-color: #ddeeff;
+    margin-bottom: 20px;
+    padding: 10px 30px;
+    box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+
+    &:hover {
+        transition: 0.3s ease-in-out;
+        transform: scale(1.02);
+    }
 }
 
 :deep(.el-link) {
@@ -421,6 +533,7 @@ const userLogout = () => {
     width: 100px;
 }
 
+
 .item-box {
     display: flex;
     justify-content: center;
@@ -430,6 +543,11 @@ const userLogout = () => {
 }
 
 .btn-ok {
+    //background-color: #8cbce7;
+    //padding: 7px 36px;
+    //text-align: center;
+    //border-radius: 10px;
+    //color: white;
     background-image: linear-gradient(to right, #16222A 0%, #3A6073 51%, #16222A 100%);
     padding: 7px 36px;
     text-align: center;
@@ -449,14 +567,17 @@ const userLogout = () => {
 }
 
 .avatar {
-    width: 35px;
-    height: 35px;
+    //width: 35px;
+    //height: 35px;
+    width: 100px;
+    height: 100px;
     margin: 5px;
 }
 
 .username {
     font-size: 12px;
-    margin-bottom: 3px;
+    margin-top: 2px;
+    margin-bottom: 5px;
 }
 
 .share-box {
@@ -466,6 +587,7 @@ const userLogout = () => {
     justify-content: center;
     padding: 50px 0 50px 0;
     background-color: aliceblue;
+    box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
 }
 
 .share-image {

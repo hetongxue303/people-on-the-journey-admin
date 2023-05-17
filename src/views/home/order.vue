@@ -121,7 +121,8 @@ onMounted(() => initData())
 
         .content-main {
             width: 100%;
-            height: 660px;
+            height: auto;
+            min-height: 590px;
             display: flex;
             padding: 20px 150px 0 150px;
 
@@ -134,6 +135,7 @@ onMounted(() => initData())
                 display: flex;
                 flex-direction: column;
                 background-color: white;
+                box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
 
                 &:hover {
                     background-color: rgba(206, 214, 220, 0.5);
